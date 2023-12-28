@@ -8,6 +8,10 @@ namespace Celeste.Mod.BackdropHider {
             ShowAll
         }
 
+        [SettingRange(0, 100, true)]
+        [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
+        public int MaxParallaxSpeed { get; set; } = 100;
+
         [SettingSubText("Overrides the individual settings below.")]
         public OverrideAllValue OverrideAllBackdrops { get; set; } = OverrideAllValue.Disabled;
         public bool BlackholeBG { get; set; } = true;
