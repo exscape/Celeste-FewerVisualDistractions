@@ -1,7 +1,15 @@
 namespace Celeste.Mod.BackdropHider {
     public class BackdropHiderModuleSettings : EverestModuleSettings {
+
+        public enum OverrideAllValue
+        {
+            Disabled,
+            HideAll,
+            ShowAll
+        }
+
         [SettingSubText("Overrides the individual settings below.")]
-        public bool HideAllBackdrops { get; set; } = false;
+        public OverrideAllValue OverrideAllBackdrops { get; set; } = OverrideAllValue.Disabled;
         public bool BlackholeBG { get; set; } = true;
         public bool CoreStarsFG { get; set; } = true;
         public bool DreamStars { get; set; } = true;

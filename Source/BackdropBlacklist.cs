@@ -39,28 +39,34 @@ public static class BackdropBlacklist
         cursor.Emit(OpCodes.Brfalse, loopEnd);
     }
 
-    private static bool IsBackdropEnabled(Backdrop backdrop) => !BackdropHiderModule.Settings.HideAllBackdrops && backdrop switch
+    private static bool IsBackdropEnabled(Backdrop backdrop)
     {
-        BlackholeBG => BackdropHiderModule.Settings.BlackholeBG,
-        CoreStarsFG => BackdropHiderModule.Settings.CoreStarsFG,
-        DreamStars => BackdropHiderModule.Settings.DreamStars,
-        FinalBossStarfield => BackdropHiderModule.Settings.FinalBossStarfield,
-        Godrays => BackdropHiderModule.Settings.Godrays,
-        HeatWave => BackdropHiderModule.Settings.HeatWave,
-        MirrorFG => BackdropHiderModule.Settings.MirrorFG,
-        NorthernLights => BackdropHiderModule.Settings.NorthernLights,
-        Parallax => BackdropHiderModule.Settings.Parallax,
-        Petals => BackdropHiderModule.Settings.Petals,
-        Planets => BackdropHiderModule.Settings.Planets,
-        RainFG => BackdropHiderModule.Settings.RainFG,
-        ReflectionFG => BackdropHiderModule.Settings.ReflectionFG,
-        Snow => BackdropHiderModule.Settings.Snow,
-        StardustFG => BackdropHiderModule.Settings.StardustFG,
-        Starfield => BackdropHiderModule.Settings.Starfield,
-        StarsBG => BackdropHiderModule.Settings.StarsBG,
-        Tentacles => BackdropHiderModule.Settings.Tentacles,
-        WindSnowFG => BackdropHiderModule.Settings.WindSnowFG,
-        // ...
-        _ => true
-    };
+        if (BackdropHiderModule.Settings.OverrideAllBackdrops == BackdropHiderModuleSettings.OverrideAllValue.HideAll)
+            return false;
+        else if (BackdropHiderModule.Settings.OverrideAllBackdrops == BackdropHiderModuleSettings.OverrideAllValue.ShowAll)
+            return true;
+
+        return backdrop switch {
+            BlackholeBG => BackdropHiderModule.Settings.BlackholeBG,
+            CoreStarsFG => BackdropHiderModule.Settings.CoreStarsFG,
+            DreamStars => BackdropHiderModule.Settings.DreamStars,
+            FinalBossStarfield => BackdropHiderModule.Settings.FinalBossStarfield,
+            Godrays => BackdropHiderModule.Settings.Godrays,
+            HeatWave => BackdropHiderModule.Settings.HeatWave,
+            MirrorFG => BackdropHiderModule.Settings.MirrorFG,
+            NorthernLights => BackdropHiderModule.Settings.NorthernLights,
+            Parallax => BackdropHiderModule.Settings.Parallax,
+            Petals => BackdropHiderModule.Settings.Petals,
+            Planets => BackdropHiderModule.Settings.Planets,
+            RainFG => BackdropHiderModule.Settings.RainFG,
+            ReflectionFG => BackdropHiderModule.Settings.ReflectionFG,
+            Snow => BackdropHiderModule.Settings.Snow,
+            StardustFG => BackdropHiderModule.Settings.StardustFG,
+            Starfield => BackdropHiderModule.Settings.Starfield,
+            StarsBG => BackdropHiderModule.Settings.StarsBG,
+            Tentacles => BackdropHiderModule.Settings.Tentacles,
+            WindSnowFG => BackdropHiderModule.Settings.WindSnowFG,
+            _ => true
+        };
+    }
 }
