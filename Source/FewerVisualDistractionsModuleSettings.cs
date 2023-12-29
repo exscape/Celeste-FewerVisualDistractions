@@ -11,38 +11,32 @@ namespace Celeste.Mod.FewerVisualDistractions {
         public enum DeathEffectSettingValue
         {
             Hidden,
-            SingleColor,
+            NoFlashes,
             Standard
         }
 
-        [SettingSubText("Allows for disabling screen wipes, e.g. when the level reloads after death")]
-        public bool ScreenWipes { get; set; } = true;
-
-        [SettingSubText("Changes the moving objects around the player as they die")]
-        public DeathEffectSettingValue DeathEffect { get; set; } = DeathEffectSettingValue.Standard;
-
-        // Used to make the IL patch easier
-        [SettingIgnore]
-        public bool SingleColorDeathEffect
-        {
-            get
-            {
-                return this.DeathEffect == DeathEffectSettingValue.SingleColor;
-            }
-        }
-
-        [SettingSubText("Enable the warping effect around the player as they die?")]
-        public bool DeathWarpEffect { get; set; } = true;
-
-        [SettingSubText("Useful if WindSnow is disabled below")]
+        [SettingSubText("Show a text indicator when there is wind. Useful if WindSnow is disabled below")]
         public bool ShowWindIndicator { get; set; } = false;
 
-        [SettingRange(0, 100, true)]
+        [SettingRange(0, 50, true)]
         [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
-        public int MaxParallaxSpeed { get; set; } = 100;
+        public int MaxParallaxSpeed { get; set; } = 50;
 
-        [SettingSubText("Overrides the individual settings below.")]
+        [SettingSubHeader("Death effects")]
+        [SettingSubText("Show screen wipes when the level reloads, e.g. on death")]
+        public bool ScreenWipes { get; set; } = true;
+
+        [SettingSubText("Changes the rotating objects around the player as they die and respawn")]
+        public DeathEffectSettingValue RotatingDeathEffect { get; set; } = DeathEffectSettingValue.Standard;
+
+        [SettingSubText("Enable the warping effect around the player as they die?")]
+        public bool WarpingDeathEffect { get; set; } = true;
+
+        [SettingSubText("This setting overrides all the individual settings below")]
         public OverrideAllValue OverrideAllBackdrops { get; set; } = OverrideAllValue.Disabled;
+
+        // One setting for each backdrop available in the vanilla game
+        [SettingSubHeader("Individual backdrop toggles")]
         public bool BlackholeBG { get; set; } = true;
         public bool CoreStarsFG { get; set; } = true;
         public bool DreamStars { get; set; } = true;

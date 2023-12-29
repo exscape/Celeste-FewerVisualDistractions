@@ -1,5 +1,4 @@
-﻿using System;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
 namespace Celeste.Mod.FewerVisualDistractions;
@@ -17,14 +16,10 @@ public static class BackdropBlacklist
 
     private static void BackdropRendererHook(ILContext il)
     {
-        // foreach (Backdrop backdrop in this.Backdrops)
-        // {
-        //+  if (!IsBackdropEnabled(backdrop))
-        //+    continue;
-        //   if (backdrop.Visible)
-
+        // Add a second condition to the renderer: render if .Visible *and* IsBackdropEnabled returns true
         ILCursor cursor = new(il);
         ILLabel loopEnd = default;
+
         if (!cursor.TryGotoNext(
           instr => instr.MatchLdloc(2),
           instr => instr.MatchLdfld<Backdrop>("Visible"),
@@ -34,6 +29,7 @@ public static class BackdropBlacklist
             Logger.Log(LogLevel.Error, "BackdropHider", "Couldn't find BackdropRenderer.Render CIL sequence to hook!");
             return;
         }
+
         cursor.Emit(OpCodes.Ldloc_2);
         cursor.EmitDelegate(IsBackdropEnabled);
         cursor.Emit(OpCodes.Brfalse, loopEnd);

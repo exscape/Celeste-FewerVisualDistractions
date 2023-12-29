@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using Microsoft.Xna.Framework;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
 using Monocle;
-using MonoMod.Cil;
-using MonoMod.Utils;
 
 namespace Celeste.Mod.FewerVisualDistractions;
 public static class ParallaxSpeedLimiter
@@ -18,7 +12,7 @@ public static class ParallaxSpeedLimiter
 
     private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
     {
-        // Null out the movement caused by the original Parallax.Update() (which hasn't called yet, but that doesn't matter)
+        // Null out the movement caused by the original Parallax.Update() (which hasn't been called yet, but that doesn't matter)
         Vector2 parallaxMovement = self.Speed * Engine.DeltaTime;
         Vector2 windMovement = self.WindMultiplier * (scene as Level).Wind * Engine.DeltaTime;
         Vector2 totalMovement = parallaxMovement + windMovement;

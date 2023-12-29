@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.Xna.Framework;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -11,7 +8,7 @@ using MonoMod.Utils;
 namespace Celeste.Mod.FewerVisualDistractions;
 public static class DeathEffectTweaker
 {
-    public static ILHook deathRoutineHook = null;
+    public static ILHook deathRoutineHook;
     public static void Load()
     {
         // Easier than adding a second condition via an IL patch. 
@@ -25,9 +22,8 @@ public static class DeathEffectTweaker
         IL.Celeste.Level.Render += patch_Level_Render;
     }
 
-
+    //  Borrowed from CelesteTAS
     private static ScreenWipe SimplifiedScreenWipe(ScreenWipe wipe) => FewerVisualDistractionsModule.Settings.ScreenWipes ? wipe : null;
-
     private static void patch_Level_Render(ILContext il)
     {
         ILCursor ilCursor = new(il);
@@ -38,14 +34,11 @@ public static class DeathEffectTweaker
         }
     }
 
+    public static bool ShouldShowDeathWarpEffect() => FewerVisualDistractionsModule.Settings.WarpingDeathEffect;
     private static void patch_PlayerDeadBody_DeathRoutine(ILContext il)
     {
-        // Add the option to hide the "burst" effect that warps the area around the player as the player dies
-
         ILCursor cursor = new(il);
-        float f;
         if (!cursor.TryGotoNext(
-            instr => instr.MatchLdcR4(out f),
             instr => instr.MatchLdcR4(0),
             instr => instr.MatchLdcR4(80),
             instr => instr.MatchLdcR4(1),
@@ -58,26 +51,23 @@ public static class DeathEffectTweaker
         }
 
         // Jump back to the start; the first LdcR4 instruction is the sixth in the C# line we want to skip
-        cursor.Index -= 5;
-        ILCursor originalCode = cursor.Clone();
+        cursor.Index -= 6;
         ILCursor afterOriginalCode = cursor.Clone();
         afterOriginalCode.Index += 13;
 
-        cursor.Emit(OpCodes.Call, typeof(FewerVisualDistractionsModule).GetMethod("get_Settings"));
-        cursor.Emit(OpCodes.Callvirt, typeof(FewerVisualDistractionsModuleSettings).GetMethod("get_DeathWarpEffect"));
-
-        // Jump past the original code if we should hide the effect
+        // Jump over the call to level.Displacement.AddBurst() that creates the warp effect
+        cursor.EmitDelegate(ShouldShowDeathWarpEffect);
         cursor.Emit(OpCodes.Brfalse, afterOriginalCode.Next);
     }
 
     private static void DeathEffect_Draw(On.Celeste.DeathEffect.orig_Draw orig, Vector2 position, Color color, float ease)
     {
-        if (FewerVisualDistractionsModule.Settings.DeathEffect == FewerVisualDistractionsModuleSettings.DeathEffectSettingValue.Hidden)
+        if (FewerVisualDistractionsModule.Settings.RotatingDeathEffect == FewerVisualDistractionsModuleSettings.DeathEffectSettingValue.Hidden)
             return;
 
         orig(position, color, ease);
     }
-
+    public static bool ShouldUseSingleColorDeathEffect() => FewerVisualDistractionsModule.Settings.RotatingDeathEffect == FewerVisualDistractionsModuleSettings.DeathEffectSettingValue.NoFlashes;
     private static void patch_DeathEffect_Draw(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -105,14 +95,11 @@ public static class DeathEffectTweaker
         ILCursor afterOriginalCode = cursor.Clone();
         afterOriginalCode.Index += 13;
 
-        // First, load the condition onto the stack, so that we can check whether we should change the effect or not
-        cursor.Emit(OpCodes.Call, typeof(FewerVisualDistractionsModule).GetMethod("get_Settings"));
-        cursor.Emit(OpCodes.Callvirt, typeof(FewerVisualDistractionsModuleSettings).GetMethod("get_SingleColorDeathEffect"));
-
-        // Next, jump to the original code if the setting is disabled
+        // Check the setting, and skip to the original code if the setting is disabled
+        cursor.EmitDelegate(ShouldUseSingleColorDeathEffect);
         cursor.Emit(OpCodes.Brfalse, originalCode.Next);
 
-        // Add in our replacement code, that simply uses the color from the method argument all the time
+        // Add in our replacement code, that simply uses the color from the method argument all the time (and thus removing the white flashes)
         cursor.Emit(OpCodes.Ldarg_1);
         cursor.Emit(OpCodes.Stloc_0);
         cursor.Emit(OpCodes.Br, afterOriginalCode.Next);
