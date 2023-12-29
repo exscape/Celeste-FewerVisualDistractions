@@ -27,12 +27,21 @@ namespace Celeste.Mod.BackdropHider {
             // TODO: apply any hooks that should always be active
             BackdropBlacklist.Load();
             ParallaxSpeedLimiter.Load();
+
+            Everest.Events.Level.OnLoadLevel += Level_OnLoadLevel;
+        }
+
+        private void Level_OnLoadLevel(Level level, Player.IntroTypes playerIntro, bool isFromLoader)
+        {
+            level.Add(new WindIndicator(level));
         }
 
         public override void Unload() {
             // TODO: unapply any hooks applied in Load()
             BackdropBlacklist.Unload();
             ParallaxSpeedLimiter.Unload();
+
+            Everest.Events.Level.OnLoadLevel -= Level_OnLoadLevel;
         }
     }
 }

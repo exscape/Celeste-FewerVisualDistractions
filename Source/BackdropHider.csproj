@@ -20,15 +20,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="$(CelestePrefix)\Celeste.dll">
-            <Private>false</Private>
-        </Reference>
         <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll">
             <Private>false</Private>
         </Reference>
         <Reference Include="$(CelestePrefix)\FNA.dll">
             <Private>false</Private>
         </Reference>
+
+        <Reference Include="$(CelestePrefix)\Celeste.dll" Publicize="true">
+                    <Private>false</Private>
+                    </Reference>
+
     </ItemGroup>
 
     <Target Name="CopyFiles" AfterTargets="Build">

@@ -1,0 +1,3 @@
+modoptions_backdrophidermodule_overrideallbackdrops_HideAll=Hide All
+modoptions_backdrophidermodule_overrideallbackdrops_ShowAll=Show All
+modoptions_backdrophidermodule_overrideallbackdrops_Disabled=No override
