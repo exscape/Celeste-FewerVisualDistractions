@@ -28,6 +28,9 @@ namespace Celeste.Mod.FewerVisualDistractions {
             }
         }
 
+        [SettingSubText("Enable the warping effect around the player as they die?")]
+        public bool DeathWarpEffect { get; set; } = true;
+
         [SettingSubText("Useful if WindSnow is disabled below")]
         public bool ShowWindIndicator { get; set; } = false;
 

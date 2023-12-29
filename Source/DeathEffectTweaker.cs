@@ -5,16 +5,54 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 
 namespace Celeste.Mod.FewerVisualDistractions;
 public static class DeathEffectTweaker
 {
+    public static ILHook deathRoutineHook = null;
     public static void Load()
     {
         // Easier than adding a second condition via an IL patch. 
         On.Celeste.DeathEffect.Draw += DeathEffect_Draw;
         IL.Celeste.DeathEffect.Draw += patch_DeathEffect_Draw;
+
+        // PlayerDeadBody.DeathRoutine is a coroutine, so we can't use the IL.Celeste... += method
+        deathRoutineHook = new(typeof(PlayerDeadBody).GetMethod("DeathRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(),
+            patch_PlayerDeadBody_DeathRoutine);
+    }
+
+    private static void patch_PlayerDeadBody_DeathRoutine(ILContext il)
+    {
+        // Add the option to hide the "burst" effect that warps the area around the player as the player dies
+
+        ILCursor cursor = new(il);
+        float f;
+        if (!cursor.TryGotoNext(
+            instr => instr.MatchLdcR4(out f),
+            instr => instr.MatchLdcR4(0),
+            instr => instr.MatchLdcR4(80),
+            instr => instr.MatchLdcR4(1),
+            instr => instr.MatchLdnull(),
+            instr => instr.MatchLdnull()
+           ))
+        {
+            Logger.Log(LogLevel.Error, "DeathEffectTweaker", "Couldn't find CIL sequence to hook for PlayerDeadBody.DeathRoutine!");
+            return;
+        }
+
+        // Jump back to the start; the first LdcR4 instruction is the sixth in the C# line we want to skip
+        cursor.Index -= 5;
+        ILCursor originalCode = cursor.Clone();
+        ILCursor afterOriginalCode = cursor.Clone();
+        afterOriginalCode.Index += 13;
+
+        cursor.Emit(OpCodes.Call, typeof(FewerVisualDistractionsModule).GetMethod("get_Settings"));
+        cursor.Emit(OpCodes.Callvirt, typeof(FewerVisualDistractionsModuleSettings).GetMethod("get_DeathWarpEffect"));
+
+        // Jump past the original code if we should hide the effect
+        cursor.Emit(OpCodes.Brfalse, afterOriginalCode.Next);
     }
 
     private static void DeathEffect_Draw(On.Celeste.DeathEffect.orig_Draw orig, Vector2 position, Color color, float ease)
@@ -35,7 +73,7 @@ public static class DeathEffectTweaker
             instr => instr.MatchConvR8()
             ))
         {
-            Logger.Log(LogLevel.Error, "DeathEffectTweaker", "Couldn't find CIL sequence to hook!");
+            Logger.Log(LogLevel.Error, "DeathEffectTweaker", "Couldn't find CIL sequence to hook for DeathEffect.Draw!");
             return;
         }
 
@@ -69,5 +107,7 @@ public static class DeathEffectTweaker
     {
         IL.Celeste.DeathEffect.Draw -= patch_DeathEffect_Draw;
         On.Celeste.DeathEffect.Draw -= DeathEffect_Draw;
+        deathRoutineHook?.Dispose();
+        deathRoutineHook = null;
     }
 }
