@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <AssemblyName>BackdropHider</AssemblyName>
+        <AssemblyName>FewerVisualDistractions</AssemblyName>
         <RootNamespace>Celeste.Mod.BackdropHider</RootNamespace>
         <LangVersion>latest</LangVersion>
         <CelestePrefix>D:\SteamLibrary\steamapps\common\Celeste</CelestePrefix>
@@ -34,12 +34,12 @@
     </ItemGroup>
 
     <Target Name="CopyFiles" AfterTargets="Build">
-        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll" DestinationFolder="$(CelestePrefix)\Mods\BackdropHider\bin" />
-        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).pdb" DestinationFolder="$(CelestePrefix)\Mods\BackdropHider\bin" />
+        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll" DestinationFolder="$(CelestePrefix)\Mods\FewerVisualDistractions\bin" />
+        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).pdb" DestinationFolder="$(CelestePrefix)\Mods\FewerVisualDistractions\bin" />
     </Target>
     
     <PropertyGroup>
-        <PathMap>$(MSBuildProjectDirectory)=BackdropHider/</PathMap>
+        <PathMap>$(MSBuildProjectDirectory)=FewerVisualDistractions/</PathMap>
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

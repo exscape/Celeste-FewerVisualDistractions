@@ -7,7 +7,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.Utils;
 
-namespace Celeste.Mod.BackdropHider;
+namespace Celeste.Mod.FewerVisualDistractions;
 public static class DeathEffectTweaker
 {
     public static void Load()
@@ -19,7 +19,7 @@ public static class DeathEffectTweaker
 
     private static void DeathEffect_Draw(On.Celeste.DeathEffect.orig_Draw orig, Vector2 position, Color color, float ease)
     {
-        if (BackdropHiderModule.Settings.DeathEffect == BackdropHiderModuleSettings.DeathEffectSettingValue.Hidden)
+        if (FewerVisualDistractionsModule.Settings.DeathEffect == FewerVisualDistractionsModuleSettings.DeathEffectSettingValue.Hidden)
             return;
 
         orig(position, color, ease);
@@ -53,8 +53,8 @@ public static class DeathEffectTweaker
         afterOriginalCode.Index += 13;
 
         // First, load the condition onto the stack, so that we can check whether we should change the effect or not
-        cursor.Emit(OpCodes.Call, typeof(BackdropHiderModule).GetMethod("get_Settings"));
-        cursor.Emit(OpCodes.Callvirt, typeof(BackdropHiderModuleSettings).GetMethod("get_SingleColorDeathEffect"));
+        cursor.Emit(OpCodes.Call, typeof(FewerVisualDistractionsModule).GetMethod("get_Settings"));
+        cursor.Emit(OpCodes.Callvirt, typeof(FewerVisualDistractionsModuleSettings).GetMethod("get_SingleColorDeathEffect"));
 
         // Next, jump to the original code if the setting is disabled
         cursor.Emit(OpCodes.Brfalse, originalCode.Next);

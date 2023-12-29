@@ -1,6 +1,6 @@
-- Name: BackdropHider
-  Version: 0.1.0
-  DLL: bin/BackdropHider.dll
+- Name: FewerVisualDistractions
+  Version: 0.2.0
+  DLL: bin/FewerVisualDistractions.dll
   Dependencies:
     - Name: EverestCore
       Version: 1.4465.0

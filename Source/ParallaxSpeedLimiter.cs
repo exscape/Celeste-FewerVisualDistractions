@@ -8,7 +8,7 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.Utils;
 
-namespace Celeste.Mod.BackdropHider;
+namespace Celeste.Mod.FewerVisualDistractions;
 public static class ParallaxSpeedLimiter
 {
     public static void Load()
@@ -25,7 +25,7 @@ public static class ParallaxSpeedLimiter
         self.Position -= totalMovement;
 
         // Add back the clamped amounts
-        var maxMovement = BackdropHiderModule.Settings.MaxParallaxSpeed * Engine.DeltaTime;
+        var maxMovement = FewerVisualDistractionsModule.Settings.MaxParallaxSpeed * Engine.DeltaTime;
         self.Position.X += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.X), maxMovement), totalMovement.X);
         self.Position.Y += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.Y), maxMovement), totalMovement.Y);
 

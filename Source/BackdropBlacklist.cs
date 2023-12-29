@@ -2,7 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
-namespace Celeste.Mod.BackdropHider;
+namespace Celeste.Mod.FewerVisualDistractions;
 public static class BackdropBlacklist
 {
     public static void Load()
@@ -20,7 +20,7 @@ public static class BackdropBlacklist
         // foreach (Backdrop backdrop in this.Backdrops)
         // {
         //+  if (!IsBackdropEnabled(backdrop))
-        //+    continue;    
+        //+    continue;
         //   if (backdrop.Visible)
 
         ILCursor cursor = new(il);
@@ -41,31 +41,31 @@ public static class BackdropBlacklist
 
     private static bool IsBackdropEnabled(Backdrop backdrop)
     {
-        if (BackdropHiderModule.Settings.OverrideAllBackdrops == BackdropHiderModuleSettings.OverrideAllValue.HideAll)
+        if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == FewerVisualDistractionsModuleSettings.OverrideAllValue.HideAll)
             return false;
-        else if (BackdropHiderModule.Settings.OverrideAllBackdrops == BackdropHiderModuleSettings.OverrideAllValue.ShowAll)
+        else if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == FewerVisualDistractionsModuleSettings.OverrideAllValue.ShowAll)
             return true;
 
         return backdrop switch {
-            BlackholeBG => BackdropHiderModule.Settings.BlackholeBG,
-            CoreStarsFG => BackdropHiderModule.Settings.CoreStarsFG,
-            DreamStars => BackdropHiderModule.Settings.DreamStars,
-            FinalBossStarfield => BackdropHiderModule.Settings.FinalBossStarfield,
-            Godrays => BackdropHiderModule.Settings.Godrays,
-            HeatWave => BackdropHiderModule.Settings.HeatWave,
-            MirrorFG => BackdropHiderModule.Settings.MirrorFG,
-            NorthernLights => BackdropHiderModule.Settings.NorthernLights,
-            Parallax => BackdropHiderModule.Settings.Parallax,
-            Petals => BackdropHiderModule.Settings.Petals,
-            Planets => BackdropHiderModule.Settings.Planets,
-            RainFG => BackdropHiderModule.Settings.RainFG,
-            ReflectionFG => BackdropHiderModule.Settings.ReflectionFG,
-            Snow => BackdropHiderModule.Settings.Snow,
-            StardustFG => BackdropHiderModule.Settings.StardustFG,
-            Starfield => BackdropHiderModule.Settings.Starfield,
-            StarsBG => BackdropHiderModule.Settings.StarsBG,
-            Tentacles => BackdropHiderModule.Settings.Tentacles,
-            WindSnowFG => BackdropHiderModule.Settings.WindSnowFG,
+            BlackholeBG => FewerVisualDistractionsModule.Settings.BlackholeBG,
+            CoreStarsFG => FewerVisualDistractionsModule.Settings.CoreStarsFG,
+            DreamStars => FewerVisualDistractionsModule.Settings.DreamStars,
+            FinalBossStarfield => FewerVisualDistractionsModule.Settings.FinalBossStarfield,
+            Godrays => FewerVisualDistractionsModule.Settings.Godrays,
+            HeatWave => FewerVisualDistractionsModule.Settings.HeatWave,
+            MirrorFG => FewerVisualDistractionsModule.Settings.MirrorFG,
+            NorthernLights => FewerVisualDistractionsModule.Settings.NorthernLights,
+            Parallax => FewerVisualDistractionsModule.Settings.Parallax,
+            Petals => FewerVisualDistractionsModule.Settings.Petals,
+            Planets => FewerVisualDistractionsModule.Settings.Planets,
+            RainFG => FewerVisualDistractionsModule.Settings.RainFG,
+            ReflectionFG => FewerVisualDistractionsModule.Settings.ReflectionFG,
+            Snow => FewerVisualDistractionsModule.Settings.Snow,
+            StardustFG => FewerVisualDistractionsModule.Settings.StardustFG,
+            Starfield => FewerVisualDistractionsModule.Settings.Starfield,
+            StarsBG => FewerVisualDistractionsModule.Settings.StarsBG,
+            Tentacles => FewerVisualDistractionsModule.Settings.Tentacles,
+            WindSnowFG => FewerVisualDistractionsModule.Settings.WindSnowFG,
             _ => true
         };
     }
