@@ -4,7 +4,7 @@ using Monocle;
 namespace Celeste.Mod.BackdropHider;
 public class WindIndicator : Entity
 {
-    private Level level;
+    private readonly Level level;
     public WindIndicator(Level level)
     {
         Tag = Tags.HUD;

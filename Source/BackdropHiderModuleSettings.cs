@@ -8,6 +8,26 @@ namespace Celeste.Mod.BackdropHider {
             ShowAll
         }
 
+        public enum DeathEffectSettingValue
+        {
+            Hidden,
+            SingleColor,
+            Standard
+        }
+
+        [SettingSubText("Changes the moving objects around the player as they die")]
+        public DeathEffectSettingValue DeathEffect { get; set; } = DeathEffectSettingValue.Standard;
+
+        // Used to make the IL patch easier
+        [SettingIgnore]
+        public bool SingleColorDeathEffect
+        {
+            get
+            {
+                return this.DeathEffect == DeathEffectSettingValue.SingleColor;
+            }
+        }
+
         [SettingSubText("Useful if WindSnow is disabled below")]
         public bool ShowWindIndicator { get; set; } = false;
 

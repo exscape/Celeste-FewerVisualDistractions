@@ -24,8 +24,8 @@ namespace Celeste.Mod.BackdropHider {
         }
 
         public override void Load() {
-            // TODO: apply any hooks that should always be active
             BackdropBlacklist.Load();
+            DeathEffectTweaker.Load();
             ParallaxSpeedLimiter.Load();
 
             Everest.Events.Level.OnLoadLevel += Level_OnLoadLevel;
@@ -37,8 +37,8 @@ namespace Celeste.Mod.BackdropHider {
         }
 
         public override void Unload() {
-            // TODO: unapply any hooks applied in Load()
             BackdropBlacklist.Unload();
+            DeathEffectTweaker.Unload();
             ParallaxSpeedLimiter.Unload();
 
             Everest.Events.Level.OnLoadLevel -= Level_OnLoadLevel;
