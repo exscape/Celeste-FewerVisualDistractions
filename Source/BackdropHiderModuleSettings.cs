@@ -8,6 +8,9 @@ namespace Celeste.Mod.BackdropHider {
             ShowAll
         }
 
+        [SettingSubText("Useful if WindSnow is disabled below")]
+        public bool ShowWindIndicator { get; set; } = false;
+
         [SettingRange(0, 100, true)]
         [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
         public int MaxParallaxSpeed { get; set; } = 100;

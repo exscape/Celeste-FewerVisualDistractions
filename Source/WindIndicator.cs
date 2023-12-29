@@ -14,19 +14,17 @@ public class WindIndicator : Entity
     public override void Render()
     {
         // Don't simply display if wind != 0, because that could make the text disappear/flicker during wind transitions in screens with varying wind
-        if (level?.windController?.pattern == WindController.Patterns.None)
+        if (!BackdropHiderModule.Settings.ShowWindIndicator || level?.windController?.pattern == WindController.Patterns.None)
             return;
 
-        float windMagnitude = level.Wind.Length();
-
-        string wind = windMagnitude switch
+        string magnitude = level.Wind.Length() switch
         {
             < 1 => "none",
             < 750 => "weak",
             < 1100 => "strong",
             _ => "crazy",
         };
-        string dir = (level.Wind.X, level.Wind.Y) switch
+        string direction = (level.Wind.X, level.Wind.Y) switch
         {
             (<0, 0) => "Left",
             (>0, 0) => "Right",
@@ -35,6 +33,6 @@ public class WindIndicator : Entity
             _ => "None"
         }; 
 
-        ActiveFont.DrawOutline($"Wind: {dir}, {wind}", new Vector2(50, 50), new Vector2(0f, 0f), Vector2.One, Color.White, 2f, Color.Black);
+        ActiveFont.DrawOutline($"Wind: {direction}, {magnitude}", new Vector2(50, 50), new Vector2(0f, 0f), Vector2.One, Color.White, 2f, Color.Black);
     }
 }
