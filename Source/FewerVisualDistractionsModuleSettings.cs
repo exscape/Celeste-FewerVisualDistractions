@@ -15,6 +15,9 @@ namespace Celeste.Mod.FewerVisualDistractions {
             Standard
         }
 
+        [SettingSubText("Allows for disabling screen wipes, e.g. when the level reloads after death")]
+        public bool ScreenWipes { get; set; } = true;
+
         [SettingSubText("Changes the moving objects around the player as they die")]
         public DeathEffectSettingValue DeathEffect { get; set; } = DeathEffectSettingValue.Standard;
 

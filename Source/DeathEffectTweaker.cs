@@ -21,6 +21,21 @@ public static class DeathEffectTweaker
         // PlayerDeadBody.DeathRoutine is a coroutine, so we can't use the IL.Celeste... += method
         deathRoutineHook = new(typeof(PlayerDeadBody).GetMethod("DeathRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(),
             patch_PlayerDeadBody_DeathRoutine);
+
+        IL.Celeste.Level.Render += patch_Level_Render;
+    }
+
+
+    private static ScreenWipe SimplifiedScreenWipe(ScreenWipe wipe) => FewerVisualDistractionsModule.Settings.ScreenWipes ? wipe : null;
+
+    private static void patch_Level_Render(ILContext il)
+    {
+        ILCursor ilCursor = new(il);
+        if (ilCursor.TryGotoNext(i => i.MatchLdarg(0), i => i.MatchLdfld<Level>("Wipe"), i => i.OpCode == OpCodes.Brfalse_S))
+        {
+            ilCursor.Index += 2;
+            ilCursor.EmitDelegate(SimplifiedScreenWipe);
+        }
     }
 
     private static void patch_PlayerDeadBody_DeathRoutine(ILContext il)
