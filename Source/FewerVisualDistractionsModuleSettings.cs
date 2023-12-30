@@ -18,10 +18,6 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Show a text indicator when there is wind. Useful if WindSnow is disabled below")]
         public bool ShowWindIndicator { get; set; } = false;
 
-        [SettingRange(0, 50, true)]
-        [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
-        public int MaxParallaxSpeed { get; set; } = 50;
-
         [SettingSubHeader("Death effects")]
         [SettingSubText("Show screen wipes when the level reloads, e.g. on death")]
         public bool ScreenWipes { get; set; } = true;
@@ -31,6 +27,14 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         [SettingSubText("Enable the warping effect around the player as they die?")]
         public bool WarpingDeathEffect { get; set; } = true;
+
+        [SettingSubHeader("Various effects")]
+        [SettingRange(0, 50, true)]
+        [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
+        public int MaxParallaxSpeed { get; set; } = 50;
+
+        [SettingSubText("Show waterfalls in chapter 6?")]
+        public bool ShowWaterfalls { get; set; } = true;
 
         [SettingSubText("This setting overrides all the individual settings below")]
         public OverrideAllValue OverrideAllBackdrops { get; set; } = OverrideAllValue.Disabled;
