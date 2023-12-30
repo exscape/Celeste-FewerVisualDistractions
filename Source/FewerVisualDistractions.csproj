@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <AssemblyName>FewerVisualDistractions</AssemblyName>
-        <RootNamespace>Celeste.Mod.BackdropHider</RootNamespace>
+        <RootNamespace>Celeste.Mod.FewerVisualDistractions</RootNamespace>
         <LangVersion>latest</LangVersion>
         <CelestePrefix>D:\SteamLibrary\steamapps\common\Celeste</CelestePrefix>
     </PropertyGroup>

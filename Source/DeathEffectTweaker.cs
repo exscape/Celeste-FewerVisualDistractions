@@ -85,7 +85,7 @@ public static class DeathEffectTweaker
         /*
         // Patch to something along the lines of
         Color color2;
-        if (BackdropHiderModule.Settings.DeathEffect == BackdropHiderModuleSettings.DeathEffectSettingValue.SingleColor)
+        if (FewerVisualDistractionsModule.Settings.DeathEffect == FewerVisualDistractionsModuleSettings.DeathEffectSettingValue.SingleColor)
             color2 = color;
         else // This line is the original code, 13 instructions long
             color2 = (Math.Floor((double)(ease * 10f)) % 2.0 == 0.0) ? color : Color.White;

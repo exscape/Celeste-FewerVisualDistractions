@@ -26,7 +26,7 @@ public static class BackdropBlacklist
           instr => instr.MatchBrfalse(out loopEnd)
         ))
         {
-            Logger.Log(LogLevel.Error, "BackdropHider", "Couldn't find BackdropRenderer.Render CIL sequence to hook!");
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find BackdropRenderer.Render CIL sequence to hook!");
             return;
         }
 

@@ -12,7 +12,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
 #if DEBUG
             Logger.SetLogLevel(nameof(FewerVisualDistractionsModule), LogLevel.Verbose);
 #else
-            Logger.SetLogLevel(nameof(BackdropHiderModule), LogLevel.Info);
+            Logger.SetLogLevel(nameof(FewerVisualDistractionsModule), LogLevel.Info);
 #endif
         }
 
