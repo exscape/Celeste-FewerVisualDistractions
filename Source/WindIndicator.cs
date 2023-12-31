@@ -24,15 +24,15 @@ public class WindIndicator : Entity
             < 1100 => "strong",
             _ => "crazy",
         };
-        string direction = (level.Wind.X, level.Wind.Y) switch
+        string windString = (level.Wind.X, level.Wind.Y) switch
         {
-            (<0, 0) => "Left",
-            (>0, 0) => "Right",
-            (0, <0) => "Up",
-            (0, >0) => "Down",
-            _ => "None"
+            (<0, 0) => $"Wind: Left, {magnitude}",
+            (>0, 0) => $"Wind: Right, {magnitude}",
+            (0, <0) => $"Wind: Up, {magnitude}",
+            (0, >0) => $"Wind: Down, {magnitude}",
+            _ => "Wind: None"
         };
 
-        ActiveFont.DrawOutline($"Wind: {direction}, {magnitude}", new Vector2(50, 50), new Vector2(0f, 0f), Vector2.One, Color.White, 2f, Color.Black);
+        ActiveFont.DrawOutline(windString, new Vector2(50, 50), new Vector2(0f, 0f), Vector2.One, Color.White, 2f, Color.Black);
     }
 }
