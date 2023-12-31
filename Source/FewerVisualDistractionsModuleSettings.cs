@@ -37,10 +37,10 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         [SettingSubHeader("Various effects")]
         [SettingRange(0, 50, true)]
-        [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas), use 0 to stop entirely")]
+        [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
         public int MaxParallaxSpeed { get; set; } = 50;
 
-        [SettingSubText("Removes/changes parallax during player movement. Note that the speed setting above still applies to e.g. wind!")]
+        [SettingSubText("Removes/changes parallax during player movement. The setting above also applies!")]
         public ParallaxSettingValue ParallaxDuringMovement { get; set; } = ParallaxSettingValue.Standard;
 
         [SettingSubText("Show waterfalls in chapter 6?")]

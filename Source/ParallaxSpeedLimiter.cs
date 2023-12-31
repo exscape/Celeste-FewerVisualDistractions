@@ -18,14 +18,27 @@ public static class ParallaxSpeedLimiter
             typeof(Parallax).GetMethod("orig_Render", BindingFlags.Public | BindingFlags.Instance), patch_Parallax_orig_Render);
     }
 
-    public static bool ShouldLockParallax() => FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == FewerVisualDistractionsModuleSettings.ParallaxSettingValue.Locked;
+    public static Vector2 ReplaceParallaxScrollVector(Vector2 scroll)
+    {
+        if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == FewerVisualDistractionsModuleSettings.ParallaxSettingValue.Standard)
+            return scroll;
+        else if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == FewerVisualDistractionsModuleSettings.ParallaxSettingValue.Locked)
+            return Vector2.Zero;
+
+        // We want a vector with 1 for each nonzero component.
+        // Just in case a negative value is used elsewhere, copy the sign too.
+        // To have this truly follow the camera we'd use Vector2.One, but the backgrounds aren't designed for that, and so we'll quickly run out of visible pixels (usually in the Y direction).
+        return new Vector2(
+            (float)Math.CopySign(scroll.X == 0f ? 0f : 1f, scroll.X),
+            (float)Math.CopySign(scroll.Y == 0f ? 0f : 1f, scroll.Y));
+    }
+
     private static void patch_Parallax_orig_Render(ILContext il)
     {
         // This patch removes the parallax effect when the player moves, but does not remove the parallax effect due to wind (especially in chapter 4)
         ILCursor cursor = new(il);
 
         if (!cursor.TryGotoNext(
-            instr => instr.MatchLdloc(0),
             instr => instr.MatchLdarg(0),
             instr => instr.MatchLdfld<Backdrop>("Scroll")
         ))
@@ -34,11 +47,9 @@ public static class ParallaxSpeedLimiter
             return;
         }
 
-        // Lock the background entirely, keeping every pixel in the same place even as you move through the level
-        ILCursor target = cursor.Clone();
-        target.Index += 5;
-        cursor.EmitDelegate(ShouldLockParallax);
-        cursor.Emit(OpCodes.Brtrue, target.Next);
+        // Jump past the loading of this.Scroll and insert our delegate to transform it
+        cursor.Index += 2;
+        cursor.EmitDelegate(ReplaceParallaxScrollVector);
     }
 
     private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
