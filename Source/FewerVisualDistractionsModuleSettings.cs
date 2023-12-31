@@ -15,6 +15,13 @@ namespace Celeste.Mod.FewerVisualDistractions {
             Standard
         }
 
+        public enum ParallaxSettingValue
+        {
+            Standard,
+            FollowCamera,
+            Locked
+        }
+
         [SettingSubText("Show a text indicator when there is wind. Useful if WindSnow is disabled below")]
         public bool ShowWindIndicator { get; set; } = false;
 
@@ -30,8 +37,11 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         [SettingSubHeader("Various effects")]
         [SettingRange(0, 50, true)]
-        [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
+        [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas), use 0 to stop entirely")]
         public int MaxParallaxSpeed { get; set; } = 50;
+
+        [SettingSubText("Removes/changes parallax during player movement. Note that the speed setting above still applies to e.g. wind!")]
+        public ParallaxSettingValue ParallaxDuringMovement { get; set; } = ParallaxSettingValue.Standard;
 
         [SettingSubText("Show waterfalls in chapter 6?")]
         public bool ShowWaterfalls { get; set; } = true;
