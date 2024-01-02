@@ -14,7 +14,7 @@ public class WindIndicator : Entity
     public override void Render()
     {
         // Don't simply display if wind != 0, because that could make the text disappear/flicker during wind transitions in screens with varying wind
-        if (!FewerVisualDistractionsModule.Settings.ShowWindIndicator || level?.windController?.pattern == WindController.Patterns.None)
+        if (!FewerVisualDistractionsModule.Settings.ShowWindIndicator || level?.windController?.pattern == WindController.Patterns.None || level?.Paused == true)
             return;
 
         string magnitude = level.Wind.Length() switch
