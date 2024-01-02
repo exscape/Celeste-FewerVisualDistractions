@@ -20,19 +20,26 @@ public static class BackdropBlacklist
         ILCursor cursor = new(il);
         ILLabel loopEnd = default;
 
-        if (!cursor.TryGotoNext(
-          instr => instr.MatchLdloc(2),
-          instr => instr.MatchLdfld<Backdrop>("Visible"),
-          instr => instr.MatchBrfalse(out loopEnd)
-        ))
+        if (!cursor.TryGotoNext(instr => instr.MatchLdfld<Backdrop>("Visible")))
         {
             Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find BackdropRenderer.Render CIL sequence to hook!");
             return;
         }
 
-        cursor.Emit(OpCodes.Ldloc_2);
-        cursor.EmitDelegate(IsBackdropEnabled);
-        cursor.Emit(OpCodes.Brfalse, loopEnd);
+        // Split to enable compatibility with the Maddie's Helping Hand (previously MaxHelpingHand) mod
+        // ParallaxFadeOutController.cs in that mod also patches on Visible, but by allowing for code between ldfld and brfalse,
+        // which are next to each other in vanilla, both mods can do their thing
+        ILCursor branch = cursor.Clone();
+        if (!branch.TryGotoNext(instr => instr.MatchBrfalse(out loopEnd)))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find BackdropRenderer.Render branch!");
+            return;
+        }
+
+        branch.Index += 1;
+        branch.Emit(OpCodes.Ldloc_2);
+        branch.EmitDelegate(IsBackdropEnabled);
+        branch.Emit(OpCodes.Brfalse, loopEnd);
     }
 
     private static bool IsBackdropEnabled(Backdrop backdrop)
