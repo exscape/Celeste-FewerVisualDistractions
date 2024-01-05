@@ -10,7 +10,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
         public FewerVisualDistractionsModule() {
             Instance = this;
 #if DEBUG
-            Logger.SetLogLevel(nameof(FewerVisualDistractionsModule), LogLevel.Verbose);
+            Logger.SetLogLevel("FewerVisualDistractions", LogLevel.Verbose);
 #else
             Logger.SetLogLevel(nameof(FewerVisualDistractionsModule), LogLevel.Info);
 #endif

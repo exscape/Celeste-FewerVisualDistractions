@@ -26,7 +26,7 @@ public static class BackdropBlacklist
             return;
         }
 
-        // Split to enable compatibility with the Maddie's Helping Hand (previously MaxHelpingHand) mod
+        // Split to enable compatibility with the Maddie's Helping Hand (previously MaxHelpingHand) mod.
         // ParallaxFadeOutController.cs in that mod also patches on Visible, but by allowing for code between ldfld and brfalse,
         // which are next to each other in vanilla, both mods can do their thing
         ILCursor branch = cursor.Clone();
