@@ -7,16 +7,15 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 
 namespace Celeste.Mod.FewerVisualDistractions;
-public static class ParallaxSpeedLimiter
+public static class ParallaxTweaker
 {
-    private static ILHook parallaxRenderHook;
+    private static ILHook parallaxOrigRenderHook;
     public static void Load()
     {
         On.Celeste.Parallax.Update += Parallax_Update;
-
         IL.Celeste.Parallax.Render += patch_Parallax_Render;
 
-        parallaxRenderHook = new(
+        parallaxOrigRenderHook = new(
             typeof(Parallax).GetMethod("orig_Render", BindingFlags.Public | BindingFlags.Instance), patch_Parallax_orig_Render);
     }
 
@@ -71,8 +70,6 @@ public static class ParallaxSpeedLimiter
         // Jump past the loading of this.Scroll and insert our delegate to transform it
         cursor.Index += 2;
         cursor.EmitDelegate(ReplaceParallaxScrollVector);
-
-        Logger.Log(LogLevel.Error, "FewerVisualDistractions", "*** Successfully patched Everest modded Parallax.Render");
     }
 
     private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
