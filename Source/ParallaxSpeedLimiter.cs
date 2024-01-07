@@ -9,10 +9,12 @@ using MonoMod.RuntimeDetour;
 namespace Celeste.Mod.FewerVisualDistractions;
 public static class ParallaxSpeedLimiter
 {
-    public static ILHook parallaxRenderHook;
+    private static ILHook parallaxRenderHook;
     public static void Load()
     {
         On.Celeste.Parallax.Update += Parallax_Update;
+
+        IL.Celeste.Parallax.Render += patch_Parallax_Render;
 
         parallaxRenderHook = new(
             typeof(Parallax).GetMethod("orig_Render", BindingFlags.Public | BindingFlags.Instance), patch_Parallax_orig_Render);
@@ -50,6 +52,27 @@ public static class ParallaxSpeedLimiter
         // Jump past the loading of this.Scroll and insert our delegate to transform it
         cursor.Index += 2;
         cursor.EmitDelegate(ReplaceParallaxScrollVector);
+    }
+
+    private static void patch_Parallax_Render(ILContext il)
+    {
+        // Apply the same patch to Everest's modded Parallax.Render, used for some modded maps
+        ILCursor cursor = new(il);
+
+        if (!cursor.TryGotoNext(
+            instr => instr.MatchLdarg(0),
+            instr => instr.MatchLdfld<Backdrop>("Scroll")
+        ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find CIL sequence to hook in Parallax.Render (Everest patched version)!");
+            return;
+        }
+
+        // Jump past the loading of this.Scroll and insert our delegate to transform it
+        cursor.Index += 2;
+        cursor.EmitDelegate(ReplaceParallaxScrollVector);
+
+        Logger.Log(LogLevel.Error, "FewerVisualDistractions", "*** Successfully patched Everest modded Parallax.Render");
     }
 
     private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
