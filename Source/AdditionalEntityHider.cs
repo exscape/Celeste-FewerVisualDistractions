@@ -3,20 +3,23 @@ using Monocle;
 using MonoMod.Cil;
 
 namespace Celeste.Mod.FewerVisualDistractions;
-public static class WaterfallHider
+public static class AdditionalEntityHider
 {
     public static void Load()
     {
-        // Remove the waterfall itself
+        // Remove waterfalls
         On.Celeste.WaterFall.Render += WaterFall_Render;
         On.Celeste.BigWaterfall.Render += BigWaterfall_Render;
 
-        // Remove the warping effect shown behind the waterfall
+        // Remove the warping effect shown behind the waterfalls
         On.Celeste.WaterFall.RenderDisplacement += WaterFall_RenderDisplacement;
         On.Celeste.BigWaterfall.RenderDisplacement += BigWaterfall_RenderDisplacement;
 
         // Remove the ripples on the water where the waterfall ends -- the game doesn't do this for the BigWaterfall class
         IL.Celeste.WaterFall.Update += patch_WaterFall_Update;
+
+        // Remove chapter 6 tentacles (the veil that hides about half the screen until you get close)
+        On.Celeste.ReflectionTentacles.Render += ReflectionTentacles_Render;
     }
 
     private static void WaterFall_RenderDisplacement(On.Celeste.WaterFall.orig_RenderDisplacement orig, WaterFall self)
@@ -40,6 +43,11 @@ public static class WaterfallHider
     private static void WaterFall_Render(On.Celeste.WaterFall.orig_Render orig, WaterFall self)
     {
         if (ShouldDrawWaterfalls())
+            orig(self);
+    }
+    private static void ReflectionTentacles_Render(On.Celeste.ReflectionTentacles.orig_Render orig, ReflectionTentacles self)
+    {
+        if (FewerVisualDistractionsModule.Settings.ShowTentacles)
             orig(self);
     }
 
@@ -81,5 +89,6 @@ public static class WaterfallHider
         On.Celeste.WaterFall.RenderDisplacement -= WaterFall_RenderDisplacement;
         On.Celeste.BigWaterfall.RenderDisplacement -= BigWaterfall_RenderDisplacement;
         IL.Celeste.WaterFall.Update -= patch_WaterFall_Update;
+        On.Celeste.ReflectionTentacles.Render -= ReflectionTentacles_Render;
     }
 }

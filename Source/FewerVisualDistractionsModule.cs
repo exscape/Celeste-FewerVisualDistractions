@@ -20,7 +20,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
             BackdropBlacklist.Load();
             DeathEffectTweaker.Load();
             ParallaxSpeedLimiter.Load();
-            WaterfallHider.Load();
+            AdditionalEntityHider.Load();
 
             Everest.Events.Level.OnLoadLevel += Level_OnLoadLevel;
         }
@@ -29,7 +29,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
             BackdropBlacklist.Unload();
             DeathEffectTweaker.Unload();
             ParallaxSpeedLimiter.Unload();
-            WaterfallHider.Unload();
+            AdditionalEntityHider.Unload();
 
             Everest.Events.Level.OnLoadLevel -= Level_OnLoadLevel;
         }
