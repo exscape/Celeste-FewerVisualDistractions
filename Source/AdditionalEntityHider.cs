@@ -21,6 +21,16 @@ public static class AdditionalEntityHider
         // Remove chapter 6 tentacles (the veil that hides about half the screen until you get close)
         On.Celeste.ReflectionTentacles.Render += ReflectionTentacles_Render;
     }
+    private static void WaterFall_Render(On.Celeste.WaterFall.orig_Render orig, WaterFall self)
+    {
+        if (ShouldDrawWaterfalls())
+            orig(self);
+    }
+    private static void BigWaterfall_Render(On.Celeste.BigWaterfall.orig_Render orig, BigWaterfall self)
+    {
+        if (ShouldDrawWaterfalls())
+            orig(self);
+    }
 
     private static void WaterFall_RenderDisplacement(On.Celeste.WaterFall.orig_RenderDisplacement orig, WaterFall self)
     {
@@ -34,17 +44,6 @@ public static class AdditionalEntityHider
             orig(self);
     }
 
-    private static void BigWaterfall_Render(On.Celeste.BigWaterfall.orig_Render orig, BigWaterfall self)
-    {
-        if (ShouldDrawWaterfalls())
-            orig(self);
-    }
-
-    private static void WaterFall_Render(On.Celeste.WaterFall.orig_Render orig, WaterFall self)
-    {
-        if (ShouldDrawWaterfalls())
-            orig(self);
-    }
     private static void ReflectionTentacles_Render(On.Celeste.ReflectionTentacles.orig_Render orig, ReflectionTentacles self)
     {
         if (FewerVisualDistractionsModule.Settings.ShowTentacles)

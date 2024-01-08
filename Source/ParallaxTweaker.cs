@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -17,6 +16,23 @@ public static class ParallaxTweaker
 
         parallaxOrigRenderHook = new(
             typeof(Parallax).GetMethod("orig_Render", BindingFlags.Public | BindingFlags.Instance), patch_Parallax_orig_Render);
+    }
+    private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
+    {
+        // This patch removes background movement due to wind (especially in chapter 4), but does not affect the parallax effect as the player moves
+
+        // Null out the movement caused by the original Parallax.Update() (which hasn't been called yet, but that doesn't matter)
+        Vector2 parallaxMovement = self.Speed * Engine.DeltaTime;
+        Vector2 windMovement = self.WindMultiplier * (scene as Level).Wind * Engine.DeltaTime;
+        Vector2 totalMovement = parallaxMovement + windMovement;
+        self.Position -= totalMovement;
+
+        // Add back the clamped amounts
+        var maxMovement = FewerVisualDistractionsModule.Settings.MaxParallaxSpeed * Engine.DeltaTime;
+        self.Position.X += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.X), maxMovement), totalMovement.X);
+        self.Position.Y += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.Y), maxMovement), totalMovement.Y);
+
+        orig(self, scene);
     }
 
     public static Vector2 ReplaceParallaxScrollVector(Vector2 scroll)
@@ -70,24 +86,6 @@ public static class ParallaxTweaker
         // Jump past the loading of this.Scroll and insert our delegate to transform it
         cursor.Index += 2;
         cursor.EmitDelegate(ReplaceParallaxScrollVector);
-    }
-
-    private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
-    {
-        // This patch removes background movement due to wind (especially in chapter 4), but does not affect the parallax effect as the player moves
-
-        // Null out the movement caused by the original Parallax.Update() (which hasn't been called yet, but that doesn't matter)
-        Vector2 parallaxMovement = self.Speed * Engine.DeltaTime;
-        Vector2 windMovement = self.WindMultiplier * (scene as Level).Wind * Engine.DeltaTime;
-        Vector2 totalMovement = parallaxMovement + windMovement;
-        self.Position -= totalMovement;
-
-        // Add back the clamped amounts
-        var maxMovement = FewerVisualDistractionsModule.Settings.MaxParallaxSpeed * Engine.DeltaTime;
-        self.Position.X += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.X), maxMovement), totalMovement.X);
-        self.Position.Y += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.Y), maxMovement), totalMovement.Y);
-
-        orig(self, scene);
     }
 
     public static void Unload()

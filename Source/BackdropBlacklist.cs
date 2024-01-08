@@ -68,7 +68,7 @@ public static class BackdropBlacklist
             Starfield => FewerVisualDistractionsModule.Settings.Starfield,
             StarsBG => FewerVisualDistractionsModule.Settings.StarsBG,
             Tentacles => FewerVisualDistractionsModule.Settings.Tentacles,
-            WindSnowFG => FewerVisualDistractionsModule.Settings.WindSnowFG,
+            WindSnowFG => FewerVisualDistractionsModule.Settings.WindSnow,
             _ => true
         };
     }

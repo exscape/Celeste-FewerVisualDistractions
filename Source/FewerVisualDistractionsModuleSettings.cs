@@ -22,7 +22,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
             Locked
         }
 
-        [SettingSubText("Show a text indicator when there is wind. Useful if WindSnow is disabled below")]
+        [SettingSubText("Show a text indicator when there is wind. Useful if Wind Snow is disabled below")]
         public bool ShowWindIndicator { get; set; } = false;
 
         [SettingSubHeader("Death effects")]
@@ -46,7 +46,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Show waterfalls in chapter 6?")]
         public bool ShowWaterfalls { get; set; } = true;
 
-        [SettingSubText("Show tentacles (purple-ish veil) in chapter 6?")]
+        [SettingSubText("Show tentacles (purple-ish veil covering half the screen) in chapter 6?")]
         public bool ShowTentacles { get; set; } = true;
 
         [SettingSubText("This setting overrides all the individual settings below")]
@@ -57,21 +57,25 @@ namespace Celeste.Mod.FewerVisualDistractions {
         public bool BlackholeBG { get; set; } = true;
         public bool CoreStarsFG { get; set; } = true;
         public bool DreamStars { get; set; } = true;
+        [SettingSubText("Fast-moving background in chapter 6")]
         public bool FinalBossStarfield { get; set; } = true;
         public bool Godrays { get; set; } = true;
         public bool HeatWave { get; set; } = true;
         public bool MirrorFG { get; set; } = true;
         public bool NorthernLights { get; set; } = true;
+        [SettingSubText("Background images, see README for more info")]
         public bool Parallax { get; set; } = true;
         public bool Petals { get; set; } = true;
         public bool Planets { get; set; } = true;
         public bool RainFG { get; set; } = true;
         public bool ReflectionFG { get; set; } = true;
+        [SettingSubText("Snow mostly used in chapter 1")]
         public bool Snow { get; set; } = true;
         public bool StardustFG { get; set; } = true;
         public bool Starfield { get; set; } = true;
         public bool StarsBG { get; set; } = true;
         public bool Tentacles { get; set; } = true;
-        public bool WindSnowFG { get; set; } = true;
+        [SettingSubText("Snow showing wind, used mostly in chapter 4")]
+        public bool WindSnow { get; set; } = true;
     }
 }
