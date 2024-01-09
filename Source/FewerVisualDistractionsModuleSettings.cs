@@ -22,8 +22,18 @@ namespace Celeste.Mod.FewerVisualDistractions {
             Locked
         }
 
+        public enum PositionValue
+        {
+            Top,
+            Bottom
+        }
+
         [SettingSubText("Show a text indicator when there is wind. Useful if Wind Snow is disabled below")]
         public bool ShowWindIndicator { get; set; } = false;
+        public PositionValue WindIndicatorPosition { get; set; } = PositionValue.Top;
+        [SettingSubText("Distance between indicator and the selected screen edge")]
+        [SettingRange(-2, 55, LargeRange = true)]
+        public int WindIndicatorOffset { get; set; } = 0;
 
         [SettingSubHeader("Death effects")]
         [SettingSubText("Show screen wipes when the level reloads, e.g. on death")]

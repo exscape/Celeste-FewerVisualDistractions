@@ -33,6 +33,12 @@ public class WindIndicator : Entity
             _ => "Wind: None"
         };
 
-        ActiveFont.DrawOutline(windString, new Vector2(50, 50), new Vector2(0f, 0f), Vector2.One, Color.White, 2f, Color.Black);
+        var baseY = FewerVisualDistractionsModule.Settings.WindIndicatorPosition == FewerVisualDistractionsModuleSettings.PositionValue.Top ?
+            0 : (1080 - ActiveFont.HeightOf("Wind: Right, strong"));
+        var yOffset = FewerVisualDistractionsModule.Settings.WindIndicatorOffset * 10;
+        var yPos = baseY == 0 ? baseY + yOffset : baseY - yOffset;
+
+        // x = 16 was found by trial and error. For whatever reason, (20, yPos) didn't look right with any Y offset.
+        ActiveFont.DrawOutline(windString, new Vector2(16, yPos), new Vector2(0f, 0f), Vector2.One, Color.White, 2f, Color.Black);
     }
 }
