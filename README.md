@@ -14,6 +14,7 @@ This mod is mostly intended for people who for one reason or another can't toler
 * Hide various other effects:
   - Waterfalls
   - Tentacles -- the purple-ish veil that hides half the screen in parts of chapter 6
+  - Heat distortion in Core (also see the "Heat Wave" backdrop which can be toggled separately)
 
 **Every setting is configurable**, so it's up to you how to use the mod.
 

@@ -58,6 +58,8 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         [SettingSubText("Show tentacles (purple-ish veil covering half the screen) in chapter 6?")]
         public bool ShowTentacles { get; set; } = true;
+        [SettingSubText("Show heat distortion in Core?")]
+        public bool ShowHeatDistortion { get; set; } = true;
 
         [SettingSubText("This setting overrides all the individual settings below")]
         public OverrideAllValue OverrideAllBackdrops { get; set; } = OverrideAllValue.Disabled;
