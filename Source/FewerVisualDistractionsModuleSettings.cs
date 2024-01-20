@@ -10,9 +10,9 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         public enum DeathEffectSettingValue
         {
-            Hidden,
+            Standard,
             NoFlashes,
-            Standard
+            Hidden
         }
 
         public enum ParallaxSettingValue
