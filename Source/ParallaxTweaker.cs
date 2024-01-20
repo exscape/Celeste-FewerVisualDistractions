@@ -95,7 +95,7 @@ public static class ParallaxTweaker
         cursor.EmitDelegate(ReplaceParallaxScrollVector);
     }
 
-    private static bool DreamBlockParallaxLocked() => FewerVisualDistractionsModule.Settings.LockDreamBlockParallax;
+    private static bool DreamBlockParallaxLocked() => FewerVisualDistractionsModule.Settings.DreamBlockStarsFollowCamera;
     private static void patch_DreamBlock_Render(ILContext il)
     {
         ILCursor cursor = new(il);
