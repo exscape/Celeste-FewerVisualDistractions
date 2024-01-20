@@ -12,19 +12,22 @@ public static class ParallaxTweaker
     private static ILHook parallaxOrigRenderHook;
     public static void Load()
     {
+        // Remove background movement due to wind (especially in chapter 4); this does not affect the parallax effect as the player moves
         On.Celeste.Parallax.Update += Parallax_Update;
+
+        // Tweak/lock background movement when the player moves (Everest method)
         IL.Celeste.Parallax.Render += patch_Parallax_Render;
 
+        // Tweak/lock background movement when the player moves (game original method)
         parallaxOrigRenderHook = new(
             typeof(Parallax).GetMethod("orig_Render", BindingFlags.Public | BindingFlags.Instance), patch_Parallax_orig_Render);
 
+        // Lock parallax in dream blocks
         IL.Celeste.DreamBlock.Render += patch_DreamBlock_Render;
     }
 
     private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
     {
-        // This patch removes background movement due to wind (especially in chapter 4), but does not affect the parallax effect as the player moves
-
         // Null out the movement caused by the original Parallax.Update() (which hasn't been called yet, but that doesn't matter)
         Vector2 parallaxMovement = self.Speed * Engine.DeltaTime;
         Vector2 windMovement = self.WindMultiplier * (scene as Level).Wind * Engine.DeltaTime;
@@ -125,5 +128,10 @@ public static class ParallaxTweaker
     public static void Unload()
     {
         On.Celeste.Parallax.Update -= Parallax_Update;
+        IL.Celeste.Parallax.Render -= patch_Parallax_Render; parallaxOrigRenderHook.Undo();
+        IL.Celeste.DreamBlock.Render -= patch_DreamBlock_Render;
+        parallaxOrigRenderHook?.Undo();
+        parallaxOrigRenderHook?.Dispose();
+        parallaxOrigRenderHook = null;
     }
 }

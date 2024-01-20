@@ -8,10 +8,36 @@ public static class BackdropBlacklist
     {
         IL.Celeste.BackdropRenderer.Render += BackdropRendererHook;
     }
-
-    public static void Unload()
+    private static bool IsBackdropEnabled(Backdrop backdrop)
     {
-        IL.Celeste.BackdropRenderer.Render -= BackdropRendererHook;
+        if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == FewerVisualDistractionsModuleSettings.OverrideAllValue.HideAll)
+            return false;
+        else if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == FewerVisualDistractionsModuleSettings.OverrideAllValue.ShowAll)
+            return true;
+
+        return backdrop switch
+        {
+            BlackholeBG => FewerVisualDistractionsModule.Settings.BlackholeBG,
+            CoreStarsFG => FewerVisualDistractionsModule.Settings.CoreStarsFG,
+            DreamStars => FewerVisualDistractionsModule.Settings.DreamStars,
+            FinalBossStarfield => FewerVisualDistractionsModule.Settings.FinalBossStarfield,
+            Godrays => FewerVisualDistractionsModule.Settings.Godrays,
+            HeatWave => FewerVisualDistractionsModule.Settings.HeatWave,
+            MirrorFG => FewerVisualDistractionsModule.Settings.MirrorFG,
+            NorthernLights => FewerVisualDistractionsModule.Settings.NorthernLights,
+            Parallax => FewerVisualDistractionsModule.Settings.Parallax,
+            Petals => FewerVisualDistractionsModule.Settings.Petals,
+            Planets => FewerVisualDistractionsModule.Settings.Planets,
+            RainFG => FewerVisualDistractionsModule.Settings.RainFG,
+            ReflectionFG => FewerVisualDistractionsModule.Settings.ReflectionFG,
+            Snow => FewerVisualDistractionsModule.Settings.Snow,
+            StardustFG => FewerVisualDistractionsModule.Settings.StardustFG,
+            Starfield => FewerVisualDistractionsModule.Settings.Starfield,
+            StarsBG => FewerVisualDistractionsModule.Settings.StarsBG,
+            Tentacles => FewerVisualDistractionsModule.Settings.Tentacles,
+            WindSnowFG => FewerVisualDistractionsModule.Settings.WindSnow,
+            _ => true
+        };
     }
 
     private static void BackdropRendererHook(ILContext il)
@@ -42,34 +68,8 @@ public static class BackdropBlacklist
         branch.Emit(OpCodes.Brfalse, loopEnd);
     }
 
-    private static bool IsBackdropEnabled(Backdrop backdrop)
+    public static void Unload()
     {
-        if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == FewerVisualDistractionsModuleSettings.OverrideAllValue.HideAll)
-            return false;
-        else if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == FewerVisualDistractionsModuleSettings.OverrideAllValue.ShowAll)
-            return true;
-
-        return backdrop switch {
-            BlackholeBG => FewerVisualDistractionsModule.Settings.BlackholeBG,
-            CoreStarsFG => FewerVisualDistractionsModule.Settings.CoreStarsFG,
-            DreamStars => FewerVisualDistractionsModule.Settings.DreamStars,
-            FinalBossStarfield => FewerVisualDistractionsModule.Settings.FinalBossStarfield,
-            Godrays => FewerVisualDistractionsModule.Settings.Godrays,
-            HeatWave => FewerVisualDistractionsModule.Settings.HeatWave,
-            MirrorFG => FewerVisualDistractionsModule.Settings.MirrorFG,
-            NorthernLights => FewerVisualDistractionsModule.Settings.NorthernLights,
-            Parallax => FewerVisualDistractionsModule.Settings.Parallax,
-            Petals => FewerVisualDistractionsModule.Settings.Petals,
-            Planets => FewerVisualDistractionsModule.Settings.Planets,
-            RainFG => FewerVisualDistractionsModule.Settings.RainFG,
-            ReflectionFG => FewerVisualDistractionsModule.Settings.ReflectionFG,
-            Snow => FewerVisualDistractionsModule.Settings.Snow,
-            StardustFG => FewerVisualDistractionsModule.Settings.StardustFG,
-            Starfield => FewerVisualDistractionsModule.Settings.Starfield,
-            StarsBG => FewerVisualDistractionsModule.Settings.StarsBG,
-            Tentacles => FewerVisualDistractionsModule.Settings.Tentacles,
-            WindSnowFG => FewerVisualDistractionsModule.Settings.WindSnow,
-            _ => true
-        };
+        IL.Celeste.BackdropRenderer.Render -= BackdropRendererHook;
     }
 }

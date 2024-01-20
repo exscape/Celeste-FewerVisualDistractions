@@ -113,5 +113,6 @@ public static class AdditionalEffectHider
         On.Celeste.BigWaterfall.RenderDisplacement -= BigWaterfall_RenderDisplacement;
         IL.Celeste.WaterFall.Update -= patch_WaterFall_Update;
         On.Celeste.ReflectionTentacles.Render -= ReflectionTentacles_Render;
+        IL.Celeste.DisplacementRenderer.BeforeRender -= patch_DisplacementRenderer_BeforeRender;
     }
 }

@@ -11,14 +11,15 @@ public static class DeathEffectTweaker
     private static ILHook deathRoutineHook;
     public static void Load()
     {
-        // Easier than adding a second condition via an IL patch. 
+        // Tweak or remove the death effect (ring around the player)
         On.Celeste.DeathEffect.Draw += DeathEffect_Draw;
         IL.Celeste.DeathEffect.Draw += patch_DeathEffect_Draw;
 
-        // PlayerDeadBody.DeathRoutine is a coroutine, so we can't use the IL.Celeste... += method
+        // Remove the displacement "burst" effect around the player
         deathRoutineHook = new(typeof(PlayerDeadBody).GetMethod("DeathRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(),
             patch_PlayerDeadBody_DeathRoutine);
 
+        // Remove screen wipes
         IL.Celeste.Level.Render += patch_Level_Render;
     }
 
@@ -108,6 +109,7 @@ public static class DeathEffectTweaker
     {
         IL.Celeste.DeathEffect.Draw -= patch_DeathEffect_Draw;
         On.Celeste.DeathEffect.Draw -= DeathEffect_Draw;
+        deathRoutineHook?.Undo();
         deathRoutineHook?.Dispose();
         deathRoutineHook = null;
     }
