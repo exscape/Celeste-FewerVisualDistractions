@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -16,7 +17,10 @@ public static class ParallaxTweaker
 
         parallaxOrigRenderHook = new(
             typeof(Parallax).GetMethod("orig_Render", BindingFlags.Public | BindingFlags.Instance), patch_Parallax_orig_Render);
+
+        IL.Celeste.DreamBlock.Render += patch_DreamBlock_Render;
     }
+
     private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
     {
         // This patch removes background movement due to wind (especially in chapter 4), but does not affect the parallax effect as the player moves
@@ -86,6 +90,36 @@ public static class ParallaxTweaker
         // Jump past the loading of this.Scroll and insert our delegate to transform it
         cursor.Index += 2;
         cursor.EmitDelegate(ReplaceParallaxScrollVector);
+    }
+
+    private static bool DreamBlockParallaxLocked() => FewerVisualDistractionsModule.Settings.LockDreamBlockParallax;
+    private static void patch_DreamBlock_Render(ILContext il)
+    {
+        ILCursor cursor = new(il);
+
+        if (!cursor.TryGotoNext(
+            instr => instr.MatchLdloc(4),
+            instr => instr.MatchLdloc(1)
+            ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find DreamBlock.Render CIL sequence to hook!");
+            return;
+        }
+
+        ILCursor jumpTarget = cursor.Clone();
+
+        if (!jumpTarget.TryGotoNext(
+            instr => instr.MatchLdarg(0),
+            instr => instr.MatchLdloc(4),
+            instr => instr.MatchCallvirt<DreamBlock>("PutInside")
+            ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find DreamBlock.Render CIL sequence for jump target!");
+            return;
+        }
+
+        cursor.EmitDelegate(DreamBlockParallaxLocked);
+        cursor.Emit(OpCodes.Brtrue, jumpTarget.Next);
     }
 
     public static void Unload()

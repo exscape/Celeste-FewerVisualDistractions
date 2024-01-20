@@ -52,6 +52,8 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         [SettingSubText("Removes/changes parallax during player movement. The setting above also applies!")]
         public ParallaxSettingValue ParallaxDuringMovement { get; set; } = ParallaxSettingValue.Standard;
+        [SettingSubText("Lock dream block parallax (stars move with the camera)?")]
+        public bool LockDreamBlockParallax { get; set; } = false;
 
         [SettingSubText("Show waterfalls in chapter 6?")]
         public bool ShowWaterfalls { get; set; } = true;
