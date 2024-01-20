@@ -3,6 +3,20 @@
 A mod for **[Celeste](https://store.steampowered.com/app/504230/Celeste/)** that lets you reduce visual stimulation/visual distractions.  
 This mod is mostly intended for people who for one reason or another can't tolerate or don't want "busy" visuals.
 
+
+
+https://github.com/exscape/Celeste-FewerVisualDistractions/assets/143653/a9938717-a4df-41a1-8dce-a941d01c256d
+
+
+
+https://github.com/exscape/Celeste-FewerVisualDistractions/assets/143653/9989df07-2600-489f-8b6c-2bb416ebaa60
+
+
+
+https://github.com/exscape/Celeste-FewerVisualDistractions/assets/143653/220ed628-392d-459a-88fc-9a78e6dd5bfa
+
+
+
 # Features
 
 * Hide certain backdrops/stylegrounds, for example to hide all moving snow (hide the Snow and WindSnow backdrops)
