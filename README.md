@@ -41,6 +41,16 @@ Settings take effect immediately, so in many cases you can see whether the setti
 This mod is probably most useful for people prone to motion sickness, highly sensitive persons, and so on.  
 Some options might also be useful for speedruns and other types of challenging play, though there are other mods made specifically for such uses (such as [Speedrun Tool](https://gamebanana.com/tools/6597), [CelesteTAS](https://gamebanana.com/tools/6715) and others).
 
+# Changelog
+
+## v0.9.1 (2024-01-22)
+
+* Remove unrelated changes: the music and game timer no longer pause when the game is paused. These changes remained in the released mod by accident.
+
+## v0.9.0 (2024-01-20)
+
+Initial release.
+
 # Installation
 
 Install the mod from [Olympus](https://everestapi.github.io/), the installer for Celeste mod loader Everest.  
