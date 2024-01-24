@@ -25,6 +25,69 @@ public static class AdditionalEffectHider
         // Remove the distortion effect in Core (when heat is active) -- also see the Heat Wave backdrop,
         // which can be toggled independently
         IL.Celeste.DisplacementRenderer.BeforeRender += patch_DisplacementRenderer_BeforeRender;
+
+        // Remove cloud movement and snow in the PICO-8 version of Celeste
+        IL.Celeste.Pico8.Classic.Draw += patch_Classic_Draw;
+    }
+
+    public static bool ShouldAnimatePico8Clouds() => FewerVisualDistractionsModule.Settings.Pico8CloudMovement;
+    public static bool ShouldRenderPico8Snow() => FewerVisualDistractionsModule.Settings.ShowPico8Snow;
+
+    private static void patch_Classic_Draw(ILContext il)
+    {
+        ILCursor cursor = new(il);
+
+        // First patch: remove cloud movement
+
+        if (!cursor.TryGotoNext(
+            instr => instr.MatchLdloc(4),
+            instr => instr.MatchDup(),
+            instr => instr.MatchLdfld<Pico8.Classic.Cloud>("x")
+            ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find Pico8.Classic.Draw CIL sequence to hook for cloud movement removal!");
+            return;
+        }
+
+        ILCursor afterLine = cursor.Clone();
+
+        if (!afterLine.TryGotoNext(
+            instr => instr.MatchLdarg(0),
+            instr => instr.MatchLdfld<Pico8.Classic>("E")
+            ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find Pico8.Classic.Draw jump target for cloud movement removal!");
+            return;
+        }
+
+        cursor.EmitDelegate(ShouldAnimatePico8Clouds);
+        cursor.Emit(OpCodes.Brfalse, afterLine.Next);
+
+        // Second patch: remove snow particles
+
+        if (!cursor.TryGotoNext(
+            instr => instr.MatchLdarg(0),
+            instr => instr.MatchLdfld<Pico8.Classic>("E"),
+            instr => instr.MatchLdloc(10),
+            instr => instr.MatchLdfld<Pico8.Classic.Particle>("x")
+            ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find Pico8.Classic.Draw CIL sequence to hook for particle removal!");
+            return;
+        }
+
+        afterLine = cursor.Clone();
+
+        if (!afterLine.TryGotoNext(instr => instr.MatchCallvirt<Pico8.Emulator>("rectfill")))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find Pico8.Classic.Draw jump target for particle removal!");
+            return;
+        }
+
+        afterLine.Index += 1;
+
+        cursor.EmitDelegate(ShouldRenderPico8Snow);
+        cursor.Emit(OpCodes.Brfalse, afterLine.Next);
     }
 
     private static bool ShouldRenderHeatWaveDisplacement() => FewerVisualDistractionsModule.Settings.ShowHeatDistortion;
@@ -115,5 +178,6 @@ public static class AdditionalEffectHider
         IL.Celeste.WaterFall.Update -= patch_WaterFall_Update;
         On.Celeste.ReflectionTentacles.Render -= ReflectionTentacles_Render;
         IL.Celeste.DisplacementRenderer.BeforeRender -= patch_DisplacementRenderer_BeforeRender;
+        IL.Celeste.Pico8.Classic.Draw -= patch_Classic_Draw;
     }
 }

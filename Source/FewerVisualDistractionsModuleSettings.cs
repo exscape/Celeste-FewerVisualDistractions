@@ -76,11 +76,20 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Show heat distortion in Core?")]
         public bool ShowHeatDistortion { get; set; } = true;
 
+        [SettingSubHeader("PICO-8 settings")]
+        [SettingName("ShowPicoSnow")]
+        [SettingSubText("Render snow particles in the PICO-8 emulator?")]
+        public bool ShowPico8Snow { get; set; } = true;
+
+        [SettingSubText("Enable background cloud movement in the PICO-8 emulator?")]
+        [SettingName("AnimatePicoClouds")]
+        public bool Pico8CloudMovement { get; set; } = true;
+
+        [SettingSubHeader("Individual backdrop toggles")]
         [SettingSubText("This setting overrides all the individual settings below")]
         public OverrideAllValue OverrideAllBackdrops { get; set; } = OverrideAllValue.Disabled;
 
         // One setting for each backdrop available in the vanilla game
-        [SettingSubHeader("Individual backdrop toggles")]
         [SettingSubText("Used in Farewell")]
         public bool BlackholeBG { get; set; } = true;
 
