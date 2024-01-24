@@ -6,6 +6,8 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 
 namespace Celeste.Mod.FewerVisualDistractions;
+using static FewerVisualDistractionsModuleSettings;
+
 public static class DeathEffectTweaker
 {
     private static ILHook deathRoutineHook;
@@ -63,11 +65,11 @@ public static class DeathEffectTweaker
 
     private static void DeathEffect_Draw(On.Celeste.DeathEffect.orig_Draw orig, Vector2 position, Color color, float ease)
     {
-        if (FewerVisualDistractionsModule.Settings.RotatingDeathEffect != FewerVisualDistractionsModuleSettings.DeathEffectSettingValue.Hidden)
+        if (FewerVisualDistractionsModule.Settings.RotatingDeathEffect != DeathEffectSettingValue.Hidden)
             orig(position, color, ease);
     }
 
-    public static bool ShouldUseSingleColorDeathEffect() => FewerVisualDistractionsModule.Settings.RotatingDeathEffect == FewerVisualDistractionsModuleSettings.DeathEffectSettingValue.NoFlashes;
+    public static bool ShouldUseSingleColorDeathEffect() => FewerVisualDistractionsModule.Settings.RotatingDeathEffect == DeathEffectSettingValue.NoFlashes;
     private static void patch_DeathEffect_Draw(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -85,7 +87,7 @@ public static class DeathEffectTweaker
         /*
         // Patch to something along the lines of
         Color color2;
-        if (FewerVisualDistractionsModule.Settings.DeathEffect == FewerVisualDistractionsModuleSettings.DeathEffectSettingValue.SingleColor)
+        if (FewerVisualDistractionsModule.Settings.DeathEffect == DeathEffectSettingValue.SingleColor)
             color2 = color;
         else // This line is the original code, 13 instructions long
             color2 = (Math.Floor((double)(ease * 10f)) % 2.0 == 0.0) ? color : Color.White;

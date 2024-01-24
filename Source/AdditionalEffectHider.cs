@@ -3,6 +3,7 @@ using Monocle;
 using MonoMod.Cil;
 
 namespace Celeste.Mod.FewerVisualDistractions;
+
 public static class AdditionalEffectHider
 {
     public static void Load()

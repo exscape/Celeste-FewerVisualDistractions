@@ -7,6 +7,8 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 
 namespace Celeste.Mod.FewerVisualDistractions;
+using static FewerVisualDistractionsModuleSettings;
+
 public static class ParallaxTweaker
 {
     private static ILHook parallaxOrigRenderHook;
@@ -44,9 +46,9 @@ public static class ParallaxTweaker
 
     public static Vector2 ReplaceParallaxScrollVector(Vector2 scroll)
     {
-        if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == FewerVisualDistractionsModuleSettings.ParallaxSettingValue.Standard)
+        if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == ParallaxSettingValue.Standard)
             return scroll;
-        else if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == FewerVisualDistractionsModuleSettings.ParallaxSettingValue.Locked)
+        else if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == ParallaxSettingValue.Locked)
             return Vector2.Zero;
 
         // We want a vector with 1 for each nonzero component.
