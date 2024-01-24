@@ -23,7 +23,7 @@ https://github.com/exscape/Celeste-FewerVisualDistractions/assets/143653/220ed62
 * Limit the speed of (or entirely stop) backdrop motion, such as the fast-moving cloud background in Chapter 4
 * Lock the background movement (parallax) in place, or lock it to follow the camera movement
 * Change the stars in dream blocks (chapter 2) to follow the camera
-* Show a text indicator when there is wind (strength and direction) -- useful if you disable the WindSnow effect
+* Show an indicator when there is wind (strength and direction) -- useful if you disable the WindSnow effect
 * Tweak or remove effects on death:
   - The wipe/fade to black can be disabled
   - The ring-shaped effect around the player at death can be limited to a single color to remove blinking, or disabled entirely
@@ -69,7 +69,9 @@ The mod has several settings relating to parallax:
 * "Parallax During Movement" adjusts the behavior of the background motion as the camera moves, and has three settings: "Standard" (multiple layers can move at different speeds), "Follow Camera" (the effect is disabled, and the background moves at the same rate as the level itself) and "Locked" (the background is fixed in place and does not move even when the camera moves).
 * Finally, there's the "Dream Block Stars Follow Camera" setting which applies the above logic to the twinkling, colorful stars in dream blocks (chapter 2) when enabled.
 
-I feel that "Follow Camera" is the least bothersome type for the latter two settings.
+I feel that "Follow Camera" is the least bothersome type for the latter two settings. **However, this mode has a big issue in some (especially very vertical) levels: we move faster through the image than intended, and so it can happen that we "run out" of background image, and the background becomes black.**  
+Therefore, I suggest using "Standard" wherever possible for a more immersive look.  
+This is usually not an issue for the mostly horizontal levels, as the game typically repeats the same background on the horizontal axis, but typically not on the vertical axis.
 
 # Recommended settings
 
@@ -80,7 +82,7 @@ Screen Wipes: Off
 Rotating Death Effect: Remove flashing  
 Warping Death Effect: Off  
 Max Parallax Speed: 0 (makes the background static in chapters where it moves even when you stand still)  
-Parallax During Movement: Follow Camera  
+Parallax During Movement: Standard (or Follow Camera, but see "Parallax settings" above for issues with that setting)  
 Dream Block Stars Follow Camera: On  
 Show Waterfalls: Off (though they are pretty)  
 Show Tentacles: Off (makes the game itself easier though, unlike almost every other setting)  

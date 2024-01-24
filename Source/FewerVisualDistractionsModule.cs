@@ -7,7 +7,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
         public override Type SettingsType => typeof(FewerVisualDistractionsModuleSettings);
         public static FewerVisualDistractionsModuleSettings Settings => (FewerVisualDistractionsModuleSettings) Instance._Settings;
 
-        public static WindIndicator windIndicator = null;
+        private static WindIndicator windIndicator = null;
 
         public FewerVisualDistractionsModule() {
             Instance = this;
