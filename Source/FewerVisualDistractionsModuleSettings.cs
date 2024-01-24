@@ -28,8 +28,17 @@ namespace Celeste.Mod.FewerVisualDistractions {
             Bottom
         }
 
-        [SettingSubText("Show a text indicator when there is wind. Useful if Wind Snow is disabled below")]
+        public enum WindIndicatorTypeValue
+        {
+            Graphical,
+            Text
+        }
+
+        [SettingSubHeader("Wind indicator")]
+        [SettingSubText("Show an indicator when there is wind. Useful if Wind Snow is disabled below")]
         public bool ShowWindIndicator { get; set; } = false;
+
+        public WindIndicatorTypeValue WindIndicatorType { get; set; } = WindIndicatorTypeValue.Graphical;
 
         public PositionValue WindIndicatorPosition { get; set; } = PositionValue.Top;
 

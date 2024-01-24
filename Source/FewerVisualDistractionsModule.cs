@@ -7,6 +7,8 @@ namespace Celeste.Mod.FewerVisualDistractions {
         public override Type SettingsType => typeof(FewerVisualDistractionsModuleSettings);
         public static FewerVisualDistractionsModuleSettings Settings => (FewerVisualDistractionsModuleSettings) Instance._Settings;
 
+        public static WindIndicator windIndicator = null;
+
         public FewerVisualDistractionsModule() {
             Instance = this;
 #if DEBUG
@@ -35,7 +37,12 @@ namespace Celeste.Mod.FewerVisualDistractions {
         }
         private void Level_OnLoadLevel(Level level, Player.IntroTypes playerIntro, bool isFromLoader)
         {
-            level.Add(new WindIndicator(level));
+            if (windIndicator == null)
+                windIndicator = new WindIndicator(level);
+            else
+                windIndicator.SwitchLevel(level);
+
+            level.Add(windIndicator);
         }
     }
 }
