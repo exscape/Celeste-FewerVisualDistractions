@@ -14,17 +14,36 @@ public class WindIndicator : Entity
     private float lastRotation = (float)Math.PI;
     private float positionX = 10f;
     private bool levelHasWindTriggers = false;
+    private bool haveEncounteredWind = false;
 
     public WindIndicator(Level level)
     {
         Tag = Tags.HUD | Tags.Global;
         SwitchLevel(level);
+
+        On.Celeste.Player.OnTransition += Player_OnTransition;
+    }
+
+    private void Player_OnTransition(On.Celeste.Player.orig_OnTransition orig, Player self)
+    {
+        // TransitionListener can't be used because the WindTrigger entities still remain until after OnInBegin,
+        // and OnInEnd isn't called for entities that exist on both the previous and new level (i.e. Global/Persistent entities)
+        orig(self);
+        UpdateWindTriggers();
     }
 
     public void SwitchLevel(Level level)
     {
         this.level = level;
-        levelHasWindTriggers = level.Entities.FindAll<WindTrigger>().Where(t => t.Pattern != WindController.Patterns.None).Any();
+        haveEncounteredWind = level.Wind.Length() > 0;
+
+        // Player.OnTransition isn't called on the initial level load
+        UpdateWindTriggers();
+    }
+
+    public void UpdateWindTriggers()
+    {
+        levelHasWindTriggers = level.Tracker.GetEntities<WindTrigger>().Where(t => (t as WindTrigger).Pattern != WindController.Patterns.None).Any();
     }
 
     public override void Render()
@@ -32,7 +51,10 @@ public class WindIndicator : Entity
         if (!FewerVisualDistractionsModule.Settings.ShowWindIndicator || level?.Paused == true)
             return;
 
-        bool shouldDisplay = levelHasWindTriggers || (level.windController != null && level.windController.pattern != WindController.Patterns.None);
+        if (!haveEncounteredWind)
+            haveEncounteredWind = level.Wind.Length() > 0;
+
+        bool shouldDisplay = haveEncounteredWind && (levelHasWindTriggers || (level.windController != null && level.windController.pattern != WindController.Patterns.None));
 
         if (FewerVisualDistractionsModule.Settings.WindIndicatorType == WindIndicatorTypeValue.Graphical)
             RenderGraphicalIndicator(shouldDisplay); // Always called, as we need to animate when shouldDisplay has just changed to to false
