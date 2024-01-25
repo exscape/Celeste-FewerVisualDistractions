@@ -34,8 +34,13 @@ namespace Celeste.Mod.FewerVisualDistractions {
             Text
         }
 
-        [SettingSubHeader("Wind indicator")]
-        [SettingSubText("Show an indicator when there is wind. Useful if Wind Snow is disabled below")]
+        [SettingSubHeader("Wind settings")]
+
+        [SettingSubText("Amount of Wind Snow to render, in percent")]
+        [SettingRange(0, 100, LargeRange = true)]
+        public int WindSnowAmount { get; set; } = 100;
+
+        [SettingSubText("Show an indicator when there is wind. Useful if Wind Snow is set to zero above")]
         public bool ShowWindIndicator { get; set; } = false;
 
         public WindIndicatorTypeValue WindIndicatorType { get; set; } = WindIndicatorTypeValue.Graphical;

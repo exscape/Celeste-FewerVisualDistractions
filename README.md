@@ -20,6 +20,7 @@ https://github.com/exscape/Celeste-FewerVisualDistractions/assets/143653/220ed62
 # Features
 
 * Hide certain backdrops/stylegrounds, for example to hide all moving snow (hide the Snow and WindSnow backdrops)
+* Reduce the amount of wind snow rendered (0-100%)
 * Limit the speed of (or entirely stop) backdrop motion, such as the fast-moving cloud background in Chapter 4
 * Lock the background movement (parallax) in place, or lock it to follow the camera movement
 * Change the stars in dream blocks (chapter 2) to follow the camera

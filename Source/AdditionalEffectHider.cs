@@ -28,6 +28,33 @@ public static class AdditionalEffectHider
 
         // Remove cloud movement and snow in the PICO-8 version of Celeste
         IL.Celeste.Pico8.Classic.Draw += patch_Classic_Draw;
+
+        // Modify amount of wind snow (0-100%) rendered
+        IL.Celeste.WindSnowFG.Render += patch_WindSnowFG_Render;
+    }
+
+    private static int ReplaceWindSnowAmount(int num)
+    {
+        return (int)(num * FewerVisualDistractionsModule.Settings.WindSnowAmount/100f);
+    }
+
+    private static void patch_WindSnowFG_Render(ILContext il)
+    {
+        ILCursor cursor = new(il);
+
+        if (!cursor.TryGotoNext(
+            instr => instr.MatchLdarg(0),
+            instr => instr.MatchLdfld<WindSnowFG>("positions"),
+            instr => instr.MatchStloc(3)
+            ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find WindSnowFG.Render CIL sequence to hook!");
+            return;
+        }
+
+        cursor.Emit(OpCodes.Ldloc_1);
+        cursor.EmitDelegate(ReplaceWindSnowAmount);
+        cursor.Emit(OpCodes.Stloc_1);
     }
 
     public static bool ShouldAnimatePico8Clouds() => FewerVisualDistractionsModule.Settings.Pico8CloudMovement;
@@ -179,5 +206,6 @@ public static class AdditionalEffectHider
         On.Celeste.ReflectionTentacles.Render -= ReflectionTentacles_Render;
         IL.Celeste.DisplacementRenderer.BeforeRender -= patch_DisplacementRenderer_BeforeRender;
         IL.Celeste.Pico8.Classic.Draw -= patch_Classic_Draw;
+        IL.Celeste.WindSnowFG.Render -= patch_WindSnowFG_Render;
     }
 }
