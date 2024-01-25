@@ -32,6 +32,7 @@ https://github.com/exscape/Celeste-FewerVisualDistractions/assets/143653/220ed62
   - Waterfalls
   - Tentacles -- the purple-ish veil that hides half the screen in parts of chapter 6
   - Heat distortion in Core (also see the "Heat Wave" backdrop which can be toggled separately)
+  - Hide snow and cloud movement in the PICO-8 version of Celeste
 
 **Every setting is configurable**, so it's up to you how to use the mod.  
 **All settings are disabled by default**, so installing the mod should not change anything; you need to enable the setting you're interested in.
@@ -42,6 +43,14 @@ This mod is probably most useful for people prone to motion sickness, highly sen
 Some options might also be useful for speedruns and other types of challenging play, though there are other mods made specifically for such uses (such as [Speedrun Tool](https://gamebanana.com/tools/6597), [CelesteTAS](https://gamebanana.com/tools/6715) and others).
 
 # Changelog
+
+## v0.9.2 (2024-01-25)
+
+* Add a graphical wind indicator with a much improved look versus the text indicator
+* Improve wind indicator display logic (only show once wind has appeared; always show in rooms with changing wind)
+* Add two settings for PICO-8 Celeste: disable snow, and disable cloud movement
+
+The PICO-8 game is a secret in chapter 3, and can be played from the main menu once found.
 
 ## v0.9.1 (2024-01-22)
 
