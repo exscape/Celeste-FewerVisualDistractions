@@ -81,6 +81,15 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Show heat distortion in Core?")]
         public bool ShowHeatDistortion { get; set; } = true;
 
+        [SettingSubText("Animate edges of Farewell lightning/electrical areas?")]
+        public bool AnimateLightningAreas { get; set; } = true;
+
+        [SettingSubText("Show lightning bolts inside Farewell lightning/electrical areas?")]
+        public bool ShowLightningBolts { get; set; } = true;
+
+        [SettingSubText("Show background floating creatures in Farewell?")]
+        public bool ShowFloatingCreatures { get; set; } = true;
+
         [SettingSubHeader("PICO-8 settings")]
         [SettingName("ShowPicoSnow")]
         [SettingSubText("Render snow particles in the PICO-8 emulator?")]
@@ -129,8 +138,10 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Snow mostly used in chapter 1")]
         public bool Snow { get; set; } = true;
 
+        [SettingSubText("Small particles used in Farewell")]
         public bool StardustFG { get; set; } = true;
 
+        [SettingSubText("Stars moving around in Farewell")]
         public bool Starfield { get; set; } = true;
 
         public bool StarsBG { get; set; } = true;

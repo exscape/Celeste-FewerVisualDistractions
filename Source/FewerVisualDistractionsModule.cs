@@ -23,6 +23,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
             DeathEffectTweaker.Load();
             ParallaxTweaker.Load();
             AdditionalEffectHider.Load();
+            FarewellTweaker.Load();
 
             Everest.Events.Level.OnLoadLevel += Level_OnLoadLevel;
         }
@@ -32,6 +33,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
             DeathEffectTweaker.Unload();
             ParallaxTweaker.Unload();
             AdditionalEffectHider.Unload();
+            FarewellTweaker.Unload();
 
             Everest.Events.Level.OnLoadLevel -= Level_OnLoadLevel;
         }
