@@ -13,6 +13,7 @@ public static class FarewellTweaker
 
         // Remove floating creatures
         On.Monocle.Entity.Render += Entity_Render;
+        On.Celeste.MoonCreature.Render += MoonCreature_Render;
     }
 
     private static void Bolt_Render(On.Celeste.LightningRenderer.Bolt.orig_Render orig, object self)
@@ -39,10 +40,14 @@ public static class FarewellTweaker
 
     private static void Entity_Render(On.Monocle.Entity.orig_Render orig, Monocle.Entity self)
     {
-        if (!FewerVisualDistractionsModule.Settings.ShowFloatingCreatures && self is Decal decal && decal.Name.Contains("farewell/creature_"))
-            return;
+        if (FewerVisualDistractionsModule.Settings.ShowFloatingCreatures || !(self is Decal decal && decal.Name.Contains("farewell/creature_")))
+            orig(self);
+    }
 
-        orig(self);
+    private static void MoonCreature_Render(On.Celeste.MoonCreature.orig_Render orig, MoonCreature self)
+    {
+        if (FewerVisualDistractionsModule.Settings.ShowFloatingCreatures)
+            orig(self);
     }
 
     public static void Unload()
@@ -51,5 +56,6 @@ public static class FarewellTweaker
         On.Celeste.LightningRenderer.DrawBezierLightning -= LightningRenderer_DrawBezierLightning;
         On.Celeste.LightningRenderer.Update -= LightningRenderer_Update;
         On.Monocle.Entity.Render -= Entity_Render;
+        On.Celeste.MoonCreature.Render -= MoonCreature_Render;
     }
 }
