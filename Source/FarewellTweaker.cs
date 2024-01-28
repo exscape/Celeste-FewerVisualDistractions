@@ -14,6 +14,13 @@ public static class FarewellTweaker
         // Remove floating creatures
         On.Monocle.Entity.Render += Entity_Render;
         On.Celeste.MoonCreature.Render += MoonCreature_Render;
+
+        // Freeze hue changes of spikes
+        On.Celeste.CrystalStaticSpinner.UpdateHue += CrystalStaticSpinner_UpdateHue;
+
+        // Freeze noise/static on billboard screens, and also disable the audio noise if the visual noise is not rendered
+        On.Celeste.PlaybackBillboard.Update += PlaybackBillboard_Update;
+        On.Celeste.SoundSource.Play += SoundSource_Play;
     }
 
     private static void Bolt_Render(On.Celeste.LightningRenderer.Bolt.orig_Render orig, object self)
@@ -50,6 +57,27 @@ public static class FarewellTweaker
             orig(self);
     }
 
+    private static void CrystalStaticSpinner_UpdateHue(On.Celeste.CrystalStaticSpinner.orig_UpdateHue orig, CrystalStaticSpinner self)
+    {
+        if (FewerVisualDistractionsModule.Settings.AnimateCrystalColors)
+            orig(self);
+    }
+
+    private static void PlaybackBillboard_Update(On.Celeste.PlaybackBillboard.orig_Update orig, PlaybackBillboard self)
+    {
+        if (FewerVisualDistractionsModule.Settings.AnimateBillboardNoise)
+            orig(self);
+    }
+
+    private static SoundSource SoundSource_Play(On.Celeste.SoundSource.orig_Play orig, SoundSource self, string path, string param, float value)
+    {
+        if (FewerVisualDistractionsModule.Settings.AnimateBillboardNoise || !path.Contains("tutorial_static"))
+            return orig(self, path, param, value);
+        else
+            return self;
+
+    }
+
     public static void Unload()
     {
         On.Celeste.LightningRenderer.Bolt.Render -= Bolt_Render;
@@ -57,5 +85,8 @@ public static class FarewellTweaker
         On.Celeste.LightningRenderer.Update -= LightningRenderer_Update;
         On.Monocle.Entity.Render -= Entity_Render;
         On.Celeste.MoonCreature.Render -= MoonCreature_Render;
+        On.Celeste.CrystalStaticSpinner.UpdateHue -= CrystalStaticSpinner_UpdateHue;
+        On.Celeste.PlaybackBillboard.Update -= PlaybackBillboard_Update;
+        On.Celeste.SoundSource.Play -= SoundSource_Play;
     }
 }
