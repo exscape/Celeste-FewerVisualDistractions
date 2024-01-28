@@ -35,7 +35,10 @@ public static class AdditionalEffectHider
 
     private static int ReplaceWindSnowAmount(int num)
     {
-        return (int)(num * FewerVisualDistractionsModule.Settings.WindSnowAmount/100f);
+        if (FewerVisualDistractionsModule.Settings.ModEnabled)
+            return (int)(num * FewerVisualDistractionsModule.Settings.WindSnowAmount / 100f);
+        else
+            return num;
     }
 
     private static void patch_WindSnowFG_Render(ILContext il)
@@ -57,8 +60,8 @@ public static class AdditionalEffectHider
         cursor.Emit(OpCodes.Stloc_1);
     }
 
-    public static bool ShouldAnimatePico8Clouds() => FewerVisualDistractionsModule.Settings.Pico8CloudMovement;
-    public static bool ShouldRenderPico8Snow() => FewerVisualDistractionsModule.Settings.ShowPico8Snow;
+    public static bool ShouldAnimatePico8Clouds() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Pico8CloudMovement;
+    public static bool ShouldRenderPico8Snow() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowPico8Snow;
 
     private static void patch_Classic_Draw(ILContext il)
     {
@@ -117,7 +120,7 @@ public static class AdditionalEffectHider
         cursor.Emit(OpCodes.Brfalse, afterLine.Next);
     }
 
-    private static bool ShouldRenderHeatWaveDisplacement() => FewerVisualDistractionsModule.Settings.ShowHeatDistortion;
+    private static bool ShouldRenderHeatWaveDisplacement() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowHeatDistortion;
     private static void patch_DisplacementRenderer_BeforeRender(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -161,11 +164,11 @@ public static class AdditionalEffectHider
 
     private static void ReflectionTentacles_Render(On.Celeste.ReflectionTentacles.orig_Render orig, ReflectionTentacles self)
     {
-        if (FewerVisualDistractionsModule.Settings.ShowTentacles)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowTentacles)
             orig(self);
     }
 
-    public static bool ShouldDrawWaterfalls() => FewerVisualDistractionsModule.Settings.ShowWaterfalls;
+    public static bool ShouldDrawWaterfalls() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowWaterfalls;
     private static void patch_WaterFall_Update(ILContext il)
     {
         // Patch out most of Update if waterfalls are disabled; specifically, we jump over the two if statements,

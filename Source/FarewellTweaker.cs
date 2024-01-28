@@ -26,56 +26,57 @@ public static class FarewellTweaker
     private static void Bolt_Render(On.Celeste.LightningRenderer.Bolt.orig_Render orig, object self)
     {
         // This method handles the occasional lightning bolts inside the areas
-        if (FewerVisualDistractionsModule.Settings.ShowLightningBolts)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowLightningBolts)
             orig(self);
     }
 
     private static void LightningRenderer_DrawBezierLightning(On.Celeste.LightningRenderer.orig_DrawBezierLightning orig, ref int index, ref Microsoft.Xna.Framework.Graphics.VertexPositionColor[] verts, uint seed, Microsoft.Xna.Framework.Vector2 pos, Microsoft.Xna.Framework.Vector2 a, Microsoft.Xna.Framework.Vector2 b, float anchor, int steps, Microsoft.Xna.Framework.Color color)
     {
         // This method handles the smaller, curved lightning bolts that randomly shows up around the edges
-        if (FewerVisualDistractionsModule.Settings.ShowLightningBolts)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowLightningBolts)
             orig(ref index, ref verts, seed, pos, a, b, anchor, steps, color);
     }
 
     private static void LightningRenderer_Update(On.Celeste.LightningRenderer.orig_Update orig, LightningRenderer self)
     {
-        // Freeze/animate the edges of the lightning area
         orig(self);
-        if (!FewerVisualDistractionsModule.Settings.AnimateLightningAreas)
+
+        // Freeze/animate the edges of the lightning area
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.AnimateLightningAreas)
             self.edgeSeed = 1;
+
     }
 
     private static void Entity_Render(On.Monocle.Entity.orig_Render orig, Monocle.Entity self)
     {
-        if (FewerVisualDistractionsModule.Settings.ShowFloatingCreatures || !(self is Decal decal && decal.Name.Contains("farewell/creature_")))
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowFloatingCreatures || !(self is Decal decal && decal.Name.Contains("farewell/creature_")))
             orig(self);
     }
 
     private static void MoonCreature_Render(On.Celeste.MoonCreature.orig_Render orig, MoonCreature self)
     {
-        if (FewerVisualDistractionsModule.Settings.ShowFloatingCreatures)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowFloatingCreatures)
             orig(self);
     }
 
     private static void CrystalStaticSpinner_UpdateHue(On.Celeste.CrystalStaticSpinner.orig_UpdateHue orig, CrystalStaticSpinner self)
     {
-        if (FewerVisualDistractionsModule.Settings.AnimateCrystalColors)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.AnimateCrystalColors)
             orig(self);
     }
 
     private static void PlaybackBillboard_Update(On.Celeste.PlaybackBillboard.orig_Update orig, PlaybackBillboard self)
     {
-        if (FewerVisualDistractionsModule.Settings.AnimateBillboardNoise)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.AnimateBillboardNoise)
             orig(self);
     }
 
     private static SoundSource SoundSource_Play(On.Celeste.SoundSource.orig_Play orig, SoundSource self, string path, string param, float value)
     {
-        if (FewerVisualDistractionsModule.Settings.AnimateBillboardNoise || !path.Contains("tutorial_static"))
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.AnimateBillboardNoise || !path.Contains("tutorial_static"))
             return orig(self, path, param, value);
         else
             return self;
-
     }
 
     public static void Unload()

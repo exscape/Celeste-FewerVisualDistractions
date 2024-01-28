@@ -34,8 +34,14 @@ namespace Celeste.Mod.FewerVisualDistractions {
             Text
         }
 
-        [SettingSubHeader("Wind settings")]
+        // Alias used in the code (to avoid repeating the long name dozens of times)
+        [SettingIgnore]
+        public bool ModEnabled => FewerVisualDistractionsEnabled;
 
+        [SettingSubText("Mod master switch. If this is off, all other settings below are ignored.")]
+        public bool FewerVisualDistractionsEnabled { get; set; } = true;
+
+        [SettingSubHeader("Wind settings")]
         [SettingSubText("Amount of Wind Snow to render, in percent")]
         [SettingRange(0, 100, LargeRange = true)]
         public int WindSnowAmount { get; set; } = 100;

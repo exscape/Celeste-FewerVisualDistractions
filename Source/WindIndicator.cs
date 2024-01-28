@@ -48,7 +48,7 @@ public class WindIndicator : Entity
 
     public override void Render()
     {
-        if (!FewerVisualDistractionsModule.Settings.ShowWindIndicator || level?.Paused == true)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.ShowWindIndicator || level?.Paused == true)
             return;
 
         if (!haveEncounteredWind)

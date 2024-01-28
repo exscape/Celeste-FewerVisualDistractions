@@ -26,7 +26,7 @@ public static class DeathEffectTweaker
     }
 
     //  Borrowed from CelesteTAS
-    private static ScreenWipe ReplaceScreenWipe(ScreenWipe wipe) => FewerVisualDistractionsModule.Settings.ScreenWipes ? wipe : null;
+    private static ScreenWipe ReplaceScreenWipe(ScreenWipe wipe) => (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ScreenWipes) ? wipe : null;
     private static void patch_Level_Render(ILContext il)
     {
         ILCursor ilCursor = new(il);
@@ -37,7 +37,7 @@ public static class DeathEffectTweaker
         }
     }
 
-    public static bool ShouldShowDeathWarpEffect() => FewerVisualDistractionsModule.Settings.WarpingDeathEffect;
+    public static bool ShouldShowDeathWarpEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.WarpingDeathEffect;
     private static void patch_PlayerDeadBody_DeathRoutine(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -65,11 +65,11 @@ public static class DeathEffectTweaker
 
     private static void DeathEffect_Draw(On.Celeste.DeathEffect.orig_Draw orig, Vector2 position, Color color, float ease)
     {
-        if (FewerVisualDistractionsModule.Settings.RotatingDeathEffect != DeathEffectSettingValue.Hidden)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.RotatingDeathEffect != DeathEffectSettingValue.Hidden)
             orig(position, color, ease);
     }
 
-    public static bool ShouldUseSingleColorDeathEffect() => FewerVisualDistractionsModule.Settings.RotatingDeathEffect == DeathEffectSettingValue.NoFlashes;
+    public static bool ShouldUseSingleColorDeathEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.RotatingDeathEffect == DeathEffectSettingValue.NoFlashes;
     private static void patch_DeathEffect_Draw(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -114,5 +114,6 @@ public static class DeathEffectTweaker
         deathRoutineHook?.Undo();
         deathRoutineHook?.Dispose();
         deathRoutineHook = null;
+        IL.Celeste.Level.Render -= patch_Level_Render;
     }
 }

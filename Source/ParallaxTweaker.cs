@@ -30,23 +30,26 @@ public static class ParallaxTweaker
 
     private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
     {
-        // Null out the movement caused by the original Parallax.Update() (which hasn't been called yet, but that doesn't matter)
-        Vector2 parallaxMovement = self.Speed * Engine.DeltaTime;
-        Vector2 windMovement = self.WindMultiplier * (scene as Level).Wind * Engine.DeltaTime;
-        Vector2 totalMovement = parallaxMovement + windMovement;
-        self.Position -= totalMovement;
+        if (FewerVisualDistractionsModule.Settings.ModEnabled)
+        {
+            // Null out the movement caused by the original Parallax.Update() (which hasn't been called yet, but that doesn't matter)
+            Vector2 parallaxMovement = self.Speed * Engine.DeltaTime;
+            Vector2 windMovement = self.WindMultiplier * (scene as Level).Wind * Engine.DeltaTime;
+            Vector2 totalMovement = parallaxMovement + windMovement;
+            self.Position -= totalMovement;
 
-        // Add back the clamped amounts
-        var maxMovement = FewerVisualDistractionsModule.Settings.MaxParallaxSpeed * Engine.DeltaTime;
-        self.Position.X += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.X), maxMovement), totalMovement.X);
-        self.Position.Y += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.Y), maxMovement), totalMovement.Y);
+            // Add back the clamped amounts
+            var maxMovement = FewerVisualDistractionsModule.Settings.MaxParallaxSpeed * Engine.DeltaTime;
+            self.Position.X += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.X), maxMovement), totalMovement.X);
+            self.Position.Y += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.Y), maxMovement), totalMovement.Y);
+        }
 
         orig(self, scene);
     }
 
     public static Vector2 ReplaceParallaxScrollVector(Vector2 scroll)
     {
-        if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == ParallaxSettingValue.Standard)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == ParallaxSettingValue.Standard)
             return scroll;
         else if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == ParallaxSettingValue.Locked)
             return Vector2.Zero;
@@ -97,7 +100,7 @@ public static class ParallaxTweaker
         cursor.EmitDelegate(ReplaceParallaxScrollVector);
     }
 
-    private static bool DreamBlockParallaxLocked() => FewerVisualDistractionsModule.Settings.DreamBlockStarsFollowCamera;
+    private static bool DreamBlockParallaxLocked() => FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.DreamBlockStarsFollowCamera;
     private static void patch_DreamBlock_Render(ILContext il)
     {
         ILCursor cursor = new(il);

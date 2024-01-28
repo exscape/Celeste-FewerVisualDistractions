@@ -37,6 +37,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
             Everest.Events.Level.OnLoadLevel -= Level_OnLoadLevel;
         }
+
         private void Level_OnLoadLevel(Level level, Player.IntroTypes playerIntro, bool isFromLoader)
         {
             if (windIndicator == null)

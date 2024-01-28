@@ -1,7 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
-
 namespace Celeste.Mod.FewerVisualDistractions;
 using static FewerVisualDistractionsModuleSettings;
 
@@ -11,12 +10,13 @@ public static class BackdropBlacklist
     {
         IL.Celeste.BackdropRenderer.Render += BackdropRendererHook;
     }
+
     private static bool IsBackdropEnabled(Backdrop backdrop)
     {
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == OverrideAllValue.ShowAll)
+            return true;
         if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == OverrideAllValue.HideAll)
             return false;
-        else if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == OverrideAllValue.ShowAll)
-            return true;
 
         return backdrop switch
         {
