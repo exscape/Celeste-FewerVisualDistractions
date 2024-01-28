@@ -11,7 +11,7 @@ public static class FarewellTweaker
         // Freeze the edges of lightning areas
         On.Celeste.LightningRenderer.Update += LightningRenderer_Update;
 
-        // Remove floating creatures
+        // Remove floating creatures *AND* floating debris (Entity.Render for both)
         On.Monocle.Entity.Render += Entity_Render;
         On.Celeste.MoonCreature.Render += MoonCreature_Render;
 
@@ -49,7 +49,20 @@ public static class FarewellTweaker
 
     private static void Entity_Render(On.Monocle.Entity.orig_Render orig, Monocle.Entity self)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowFloatingCreatures || !(self is Decal decal && decal.Name.Contains("farewell/creature_")))
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled)
+        {
+            orig(self);
+            return;
+        }
+
+        bool shouldRender = true;
+
+        if (self is Decal decal && decal.Name.Contains("farewell/creature_") && !FewerVisualDistractionsModule.Settings.ShowFloatingCreatures)
+            shouldRender = false;
+        else if (self is FloatingDebris && !FewerVisualDistractionsModule.Settings.ShowFloatingDebris)
+            shouldRender = false;
+
+        if (shouldRender)
             orig(self);
     }
 

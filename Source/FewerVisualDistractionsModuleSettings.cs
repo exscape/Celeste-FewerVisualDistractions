@@ -87,6 +87,12 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Show heat distortion in Core?")]
         public bool ShowHeatDistortion { get; set; } = true;
 
+        [SettingSubText("Show floating Debris in Farewell? (Small specks of dust)")]
+        public bool ShowFloatingDebris { get; set; } = true;
+
+        [SettingSubText("Show background floating creatures in Farewell?")]
+        public bool ShowFloatingCreatures { get; set; } = true;
+
         [SettingSubText("Allow rainbow colored crystals in Farewell to change colors?")]
         public bool AnimateCrystalColors { get; set; } = true;
 
@@ -95,9 +101,6 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         [SettingSubText("Show lightning bolts inside Farewell lightning/electrical areas?")]
         public bool ShowLightningBolts { get; set; } = true;
-
-        [SettingSubText("Show background floating creatures in Farewell?")]
-        public bool ShowFloatingCreatures { get; set; } = true;
 
         [SettingSubText("Animate background noise on billboards (tutorial screens) in Farewell?")]
         public bool AnimateBillboardNoise { get; set; } = true;
