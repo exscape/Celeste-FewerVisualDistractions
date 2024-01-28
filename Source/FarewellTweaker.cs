@@ -21,6 +21,9 @@ public static class FarewellTweaker
         // Freeze noise/static on billboard screens, and also disable the audio noise if the visual noise is not rendered
         On.Celeste.PlaybackBillboard.Update += PlaybackBillboard_Update;
         On.Celeste.SoundSource.Play += SoundSource_Play;
+
+        // Freeze Black hole background animation
+        On.Celeste.BlackholeBG.Update += BlackholeBG_Update;
     }
 
     private static void Bolt_Render(On.Celeste.LightningRenderer.Bolt.orig_Render orig, object self)
@@ -92,6 +95,12 @@ public static class FarewellTweaker
             return self;
     }
 
+    private static void BlackholeBG_Update(On.Celeste.BlackholeBG.orig_Update orig, BlackholeBG self, Monocle.Scene scene)
+    {
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.AnimateBlackHoleBackground)
+            orig(self, scene);
+    }
+
     public static void Unload()
     {
         On.Celeste.LightningRenderer.Bolt.Render -= Bolt_Render;
@@ -102,5 +111,6 @@ public static class FarewellTweaker
         On.Celeste.CrystalStaticSpinner.UpdateHue -= CrystalStaticSpinner_UpdateHue;
         On.Celeste.PlaybackBillboard.Update -= PlaybackBillboard_Update;
         On.Celeste.SoundSource.Play -= SoundSource_Play;
+        On.Celeste.BlackholeBG.Update -= BlackholeBG_Update;
     }
 }
