@@ -105,6 +105,9 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Animate background noise on billboards (tutorial screens) in Farewell?")]
         public bool AnimateBillboardNoise { get; set; } = true;
 
+        [SettingSubText("Animate glitching green lines in Farewell?")]
+        public bool AnimateGlitches { get; set; } = true;
+
         [SettingSubText("Animate the black hole background in Farewell?")]
         public bool AnimateBlackHoleBackground { get; set; } = true;
 

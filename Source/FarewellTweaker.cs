@@ -60,8 +60,13 @@ public static class FarewellTweaker
 
         bool shouldRender = true;
 
-        if (self is Decal decal && decal.Name.Contains("farewell/creature_") && !FewerVisualDistractionsModule.Settings.ShowFloatingCreatures)
-            shouldRender = false;
+        if (self is Decal decal)
+        {
+            if (decal.Name.Contains("farewell/creature_") && !FewerVisualDistractionsModule.Settings.ShowFloatingCreatures)
+                shouldRender = false;
+            else if (decal.Name.Contains("farewell/glitch_") && !FewerVisualDistractionsModule.Settings.AnimateGlitches)
+                shouldRender = false;
+        }
         else if (self is FloatingDebris && !FewerVisualDistractionsModule.Settings.ShowFloatingDebris)
             shouldRender = false;
 
