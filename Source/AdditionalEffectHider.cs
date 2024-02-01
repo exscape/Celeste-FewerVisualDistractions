@@ -29,14 +29,16 @@ public static class AdditionalEffectHider
         // Remove cloud movement and snow in the PICO-8 version of Celeste
         IL.Celeste.Pico8.Classic.Draw += patch_Classic_Draw;
 
-        // Modify amount of wind snow (0-100%) rendered
+        // Modify amount of wind snow (0-100%) rendered; same for Stardust which is basically the same thing but colorful
         IL.Celeste.WindSnowFG.Render += patch_WindSnowFG_Render;
+        IL.Celeste.StardustFG.Render += patch_StardustFG_Render;
     }
+
 
     private static int ReplaceWindSnowAmount(int num)
     {
         if (FewerVisualDistractionsModule.Settings.ModEnabled)
-            return (int)(num * FewerVisualDistractionsModule.Settings.WindSnowAmount / 100f);
+            return (int)(num * FewerVisualDistractionsModule.Settings.WindSnowAndStardustAmount / 100f);
         else
             return num;
     }
@@ -58,6 +60,24 @@ public static class AdditionalEffectHider
         cursor.Emit(OpCodes.Ldloc_1);
         cursor.EmitDelegate(ReplaceWindSnowAmount);
         cursor.Emit(OpCodes.Stloc_1);
+    }
+
+    private static void patch_StardustFG_Render(ILContext il)
+    {
+        ILCursor cursor = new(il);
+
+        if (!cursor.TryGotoNext(MoveType.After,
+            instr => instr.MatchLdarg(0),
+            instr => instr.MatchLdfld<StardustFG>("particles"),
+            instr => instr.MatchLdlen(),
+            instr => instr.MatchConvI4()
+            ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find StardustFG.Render CIL sequence to hook!");
+            return;
+        }
+
+        cursor.EmitDelegate(ReplaceWindSnowAmount);
     }
 
     public static bool ShouldAnimatePico8Clouds() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Pico8CloudMovement;
@@ -210,5 +230,6 @@ public static class AdditionalEffectHider
         IL.Celeste.DisplacementRenderer.BeforeRender -= patch_DisplacementRenderer_BeforeRender;
         IL.Celeste.Pico8.Classic.Draw -= patch_Classic_Draw;
         IL.Celeste.WindSnowFG.Render -= patch_WindSnowFG_Render;
+        IL.Celeste.StardustFG.Render -= patch_StardustFG_Render;
     }
 }

@@ -42,9 +42,9 @@ namespace Celeste.Mod.FewerVisualDistractions {
         public bool FewerVisualDistractionsEnabled { get; set; } = true;
 
         [SettingSubHeader("Wind settings")]
-        [SettingSubText("Amount of Wind Snow to render, in percent")]
+        [SettingSubText("Amount of Wind Snow / Stardust to render, in percent")]
         [SettingRange(0, 100, LargeRange = true)]
-        public int WindSnowAmount { get; set; } = 100;
+        public int WindSnowAndStardustAmount { get; set; } = 100;
 
         [SettingSubText("Show an indicator when there is wind. Useful if Wind Snow is set to zero above")]
         public bool ShowWindIndicator { get; set; } = false;
@@ -159,7 +159,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Snow mostly used in chapter 1")]
         public bool Snow { get; set; } = true;
 
-        [SettingSubText("Small particles used in Farewell")]
+        [SettingSubText("Particles showing wind in Farewell; amount can be adjusted above")]
         public bool StardustFG { get; set; } = true;
 
         [SettingSubText("Stars moving around in Farewell")]
@@ -169,7 +169,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         public bool Tentacles { get; set; } = true;
 
-        [SettingSubText("Snow showing wind, used mostly in chapter 4")]
+        [SettingSubText("Snow showing wind; amount can be adjusted above")]
         public bool WindSnow { get; set; } = true;
     }
 }
