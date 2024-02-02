@@ -67,7 +67,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Enable the warping effect around the player as they die?")]
         public bool WarpingDeathEffect { get; set; } = true;
 
-        [SettingSubHeader("Various effects")]
+        [SettingSubHeader("Parallax settings")]
         [SettingRange(0, 50, true)]
         [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
         public int MaxParallaxSpeed { get; set; } = 50;
@@ -78,6 +78,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Change the stars in dream blocks to follow the camera?")]
         public bool DreamBlockStarsFollowCamera { get; set; } = false;
 
+        [SettingSubHeader("Various effects")]
         [SettingSubText("Show waterfalls in chapter 6?")]
         public bool ShowWaterfalls { get; set; } = true;
 
@@ -87,6 +88,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Show heat distortion in Core?")]
         public bool ShowHeatDistortion { get; set; } = true;
 
+        [SettingSubHeader("Farewell-specific settings")]
         [SettingSubText("Show floating Debris in Farewell? (Small specks of dust)")]
         public bool ShowFloatingDebris { get; set; } = true;
 
@@ -165,6 +167,7 @@ namespace Celeste.Mod.FewerVisualDistractions {
         [SettingSubText("Stars moving around in Farewell")]
         public bool Starfield { get; set; } = true;
 
+        [SettingSubText("Falling stars in chapter 2")]
         public bool StarsBG { get; set; } = true;
 
         public bool Tentacles { get; set; } = true;
