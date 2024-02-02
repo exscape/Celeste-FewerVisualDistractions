@@ -22,19 +22,19 @@ public static class DeathEffectTweaker
             patch_PlayerDeadBody_DeathRoutine);
 
         // Remove screen wipes
-        IL.Celeste.Level.Render += patch_Level_Render;
+        On.Celeste.Level.Render += Level_Render;
     }
 
-    //  Borrowed from CelesteTAS
-    private static ScreenWipe ReplaceScreenWipe(ScreenWipe wipe) => (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ScreenWipes) ? wipe : null;
-    private static void patch_Level_Render(ILContext il)
+    private static void Level_Render(On.Celeste.Level.orig_Render orig, Level self)
     {
-        ILCursor ilCursor = new(il);
-        if (ilCursor.TryGotoNext(i => i.MatchLdarg(0), i => i.MatchLdfld<Level>("Wipe"), i => i.OpCode == OpCodes.Brfalse_S))
-        {
-            ilCursor.Index += 2;
-            ilCursor.EmitDelegate(ReplaceScreenWipe);
-        }
+        var oldScreenWipe = self.Wipe;
+
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.ScreenWipes)
+            self.Wipe = null;
+
+        orig(self);
+
+        self.Wipe = oldScreenWipe;
     }
 
     public static bool ShouldShowDeathWarpEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.WarpingDeathEffect;
@@ -114,6 +114,5 @@ public static class DeathEffectTweaker
         deathRoutineHook?.Undo();
         deathRoutineHook?.Dispose();
         deathRoutineHook = null;
-        IL.Celeste.Level.Render -= patch_Level_Render;
     }
 }
