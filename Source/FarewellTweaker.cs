@@ -89,8 +89,10 @@ public static class FarewellTweaker
 
     private static void PlaybackBillboard_Update(On.Celeste.PlaybackBillboard.orig_Update orig, PlaybackBillboard self)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.AnimateBillboardNoise)
-            orig(self);
+        orig(self);
+
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.AnimateBillboardNoise)
+            self.Seed = 1;
     }
 
     private static SoundSource SoundSource_Play(On.Celeste.SoundSource.orig_Play orig, SoundSource self, string path, string param, float value)
