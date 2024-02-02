@@ -23,6 +23,7 @@ public static class FarewellTweaker
         On.Celeste.SoundSource.Play += SoundSource_Play;
 
         // Freeze Black hole background animation
+        On.Celeste.Backdrop.Update += Backdrop_Update;
         On.Celeste.BlackholeBG.Update += BlackholeBG_Update;
     }
 
@@ -100,10 +101,23 @@ public static class FarewellTweaker
             return self;
     }
 
+    private static void Backdrop_Update(On.Celeste.Backdrop.orig_Update orig, Backdrop self, Monocle.Scene scene)
+    {
+        orig(self, scene);
+
+        // BlackholeBG.Update() doesn't update the animation state if Visible is false.
+        // The value is re-set in BlackholeBG_Update (below), so the backdrop will still be rendered where it should be rendered
+        if (self is BlackholeBG && FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.AnimateBlackHoleBackground)
+            self.Visible = false;
+    }
+
     private static void BlackholeBG_Update(On.Celeste.BlackholeBG.orig_Update orig, BlackholeBG self, Monocle.Scene scene)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.AnimateBlackHoleBackground)
-            orig(self, scene);
+        orig(self, scene);
+
+        // "Undo" the change from Backdrop.Update (above), which is called just prior to this if (self is BlackholeBG)
+        if (FewerVisualDistractionsModule.Settings.ModEnabled)
+            self.Visible = self.IsVisible(scene as Level);
     }
 
     public static void Unload()
@@ -116,6 +130,7 @@ public static class FarewellTweaker
         On.Celeste.CrystalStaticSpinner.UpdateHue -= CrystalStaticSpinner_UpdateHue;
         On.Celeste.PlaybackBillboard.Update -= PlaybackBillboard_Update;
         On.Celeste.SoundSource.Play -= SoundSource_Play;
+        On.Celeste.Backdrop.Update -= Backdrop_Update;
         On.Celeste.BlackholeBG.Update -= BlackholeBG_Update;
     }
 }
