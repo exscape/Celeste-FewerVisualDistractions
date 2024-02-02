@@ -1,11 +1,15 @@
 ﻿using Mono.Cecil.Cil;
-using Monocle;
 using MonoMod.Cil;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Celeste.Mod.FewerVisualDistractions;
 
 public static class AdditionalEffectHider
 {
+    private static List<float> origCloudSpeeds;
+    private static List<Pico8.Classic.Particle> origParticles;
+
     public static void Load()
     {
         // Remove waterfalls
@@ -24,10 +28,11 @@ public static class AdditionalEffectHider
 
         // Remove the distortion effect in Core (when heat is active) -- also see the Heat Wave backdrop,
         // which can be toggled independently
-        IL.Celeste.DisplacementRenderer.BeforeRender += patch_DisplacementRenderer_BeforeRender;
+        On.Celeste.HeatWave.RenderDisplacement += HeatWave_RenderDisplacement;
 
         // Remove cloud movement and snow in the PICO-8 version of Celeste
-        IL.Celeste.Pico8.Classic.Draw += patch_Classic_Draw;
+        On.Celeste.Pico8.Classic.Init += Classic_Init;
+        On.Celeste.Pico8.Classic.Update += Classic_Update;
 
         // Modify amount of wind snow (0-100%) rendered; same for Stardust which is basically the same thing but colorful
         IL.Celeste.WindSnowFG.Render += patch_WindSnowFG_Render;
@@ -79,83 +84,38 @@ public static class AdditionalEffectHider
         cursor.EmitDelegate(ReplaceWindSnowAmount);
     }
 
-    public static bool ShouldAnimatePico8Clouds() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Pico8CloudMovement;
-    public static bool ShouldRenderPico8Snow() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowPico8Snow;
-
-    private static void patch_Classic_Draw(ILContext il)
+    private static void Classic_Init(On.Celeste.Pico8.Classic.orig_Init orig, Pico8.Classic self, Pico8.Emulator emulator)
     {
-        ILCursor cursor = new(il);
-
-        // First patch: remove cloud movement
-
-        if (!cursor.TryGotoNext(
-            instr => instr.MatchLdloc(4),
-            instr => instr.MatchDup(),
-            instr => instr.MatchLdfld<Pico8.Classic.Cloud>("x")
-            ))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find Pico8.Classic.Draw CIL sequence to hook for cloud movement removal!");
-            return;
-        }
-
-        ILCursor afterLine = cursor.Clone();
-
-        if (!afterLine.TryGotoNext(
-            instr => instr.MatchLdarg(0),
-            instr => instr.MatchLdfld<Pico8.Classic>("E")
-            ))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find Pico8.Classic.Draw jump target for cloud movement removal!");
-            return;
-        }
-
-        cursor.EmitDelegate(ShouldAnimatePico8Clouds);
-        cursor.Emit(OpCodes.Brfalse, afterLine.Next);
-
-        // Second patch: remove snow particles
-
-        if (!cursor.TryGotoNext(
-            instr => instr.MatchLdarg(0),
-            instr => instr.MatchLdfld<Pico8.Classic>("E"),
-            instr => instr.MatchLdloc(10),
-            instr => instr.MatchLdfld<Pico8.Classic.Particle>("x")
-            ))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find Pico8.Classic.Draw CIL sequence to hook for particle removal!");
-            return;
-        }
-
-        afterLine = cursor.Clone();
-
-        if (!afterLine.TryGotoNext(instr => instr.MatchCallvirt<Pico8.Emulator>("rectfill")))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find Pico8.Classic.Draw jump target for particle removal!");
-            return;
-        }
-
-        afterLine.Index += 1;
-
-        cursor.EmitDelegate(ShouldRenderPico8Snow);
-        cursor.Emit(OpCodes.Brfalse, afterLine.Next);
+        orig(self, emulator);
+        origCloudSpeeds = self.clouds.Select(c => c.spd).ToList();
+        origParticles = new(self.particles);
     }
 
-    private static bool ShouldRenderHeatWaveDisplacement() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowHeatDistortion;
-    private static void patch_DisplacementRenderer_BeforeRender(ILContext il)
+    private static void Classic_Update(On.Celeste.Pico8.Classic.orig_Update orig, Pico8.Classic self)
     {
-        ILCursor cursor = new(il);
-        ILLabel afterIfStatement = default;
+        bool shouldAnimateClouds = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Pico8CloudMovement;
+        bool shouldRenderSnow = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowPico8Snow;
 
-        if (!cursor.TryGotoNext(
-            instr => instr.MatchLdloc(2),
-            instr => instr.MatchBrfalse(out afterIfStatement)
-            ))
+        if (!shouldRenderSnow && self.particles.Count > 0)
+            self.particles.Clear();
+        else if (shouldRenderSnow && self.particles.Count == 0)
+            self.particles = new(origParticles);
+
+        if (!shouldAnimateClouds && self.clouds.Count > 0 && self.clouds[0].spd != 0)
+            self.clouds.ForEach(c => c.spd = 0);
+        else if (shouldAnimateClouds && self.clouds.Count > 0 && self.clouds[0].spd == 0)
         {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find DisplacementRenderer.BeforeRender CIL sequence to hook!");
-            return;
+            for (int i = 0; i < self.clouds.Count; i++)
+                self.clouds[i].spd = origCloudSpeeds[i];
         }
 
-        cursor.EmitDelegate(ShouldRenderHeatWaveDisplacement);
-        cursor.Emit(OpCodes.Brfalse, afterIfStatement);
+        orig(self);
+    }
+
+    private static void HeatWave_RenderDisplacement(On.Celeste.HeatWave.orig_RenderDisplacement orig, HeatWave self, Level level)
+    {
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowHeatDistortion)
+            orig(self, level);
     }
 
     private static void WaterFall_Render(On.Celeste.WaterFall.orig_Render orig, WaterFall self)
@@ -210,8 +170,9 @@ public static class AdditionalEffectHider
         On.Celeste.BigWaterfall.RenderDisplacement -= BigWaterfall_RenderDisplacement;
         On.Celeste.WaterFall.Update -= WaterFall_Update;
         On.Celeste.ReflectionTentacles.Render -= ReflectionTentacles_Render;
-        IL.Celeste.DisplacementRenderer.BeforeRender -= patch_DisplacementRenderer_BeforeRender;
-        IL.Celeste.Pico8.Classic.Draw -= patch_Classic_Draw;
+        On.Celeste.HeatWave.RenderDisplacement -= HeatWave_RenderDisplacement;
+        On.Celeste.Pico8.Classic.Init -= Classic_Init;
+        On.Celeste.Pico8.Classic.Update -= Classic_Update;
         IL.Celeste.WindSnowFG.Render -= patch_WindSnowFG_Render;
         IL.Celeste.StardustFG.Render -= patch_StardustFG_Render;
     }
