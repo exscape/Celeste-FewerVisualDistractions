@@ -26,6 +26,9 @@ public static class ParallaxTweaker
 
         // Lock parallax in dream blocks
         IL.Celeste.DreamBlock.Render += patch_DreamBlock_Render;
+
+        // Respect parallax settings for the Planets backdrop
+        On.Celeste.Planets.Render += Planets_Render;
     }
 
     private static void Parallax_Update(On.Celeste.Parallax.orig_Update orig, Parallax self, Scene scene)
@@ -130,11 +133,25 @@ public static class ParallaxTweaker
         cursor.Emit(OpCodes.Brtrue, jumpTarget.Next);
     }
 
+    private static void Planets_Render(On.Celeste.Planets.orig_Render orig, Planets self, Scene scene)
+    {
+        var oldScroll = self.Scroll;
+
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxDuringMovement != ParallaxSettingValue.Standard)
+            self.Scroll = ReplaceParallaxScrollVector(self.Scroll);
+
+        orig(self, scene);
+
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxDuringMovement != ParallaxSettingValue.Standard)
+            self.Scroll = oldScroll;
+    }
+
     public static void Unload()
     {
         On.Celeste.Parallax.Update -= Parallax_Update;
         IL.Celeste.Parallax.Render -= patch_Parallax_Render; parallaxOrigRenderHook.Undo();
         IL.Celeste.DreamBlock.Render -= patch_DreamBlock_Render;
+        On.Celeste.Planets.Render -= Planets_Render;
         parallaxOrigRenderHook?.Undo();
         parallaxOrigRenderHook?.Dispose();
         parallaxOrigRenderHook = null;
