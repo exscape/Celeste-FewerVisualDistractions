@@ -1,5 +1,4 @@
-﻿using Mono.Cecil.Cil;
-using MonoMod.Cil;
+﻿using System.Linq;
 
 namespace Celeste.Mod.FewerVisualDistractions;
 using static FewerVisualDistractionsModuleSettings;
@@ -8,7 +7,20 @@ public static class BackdropBlacklist
 {
     public static void Load()
     {
-        IL.Celeste.BackdropRenderer.Render += BackdropRendererHook;
+        On.Celeste.BackdropRenderer.Render += BackdropRenderer_Render;
+    }
+
+    private static void BackdropRenderer_Render(On.Celeste.BackdropRenderer.orig_Render orig, BackdropRenderer self, Monocle.Scene scene)
+    {
+        var oldVisible = self.Backdrops.Select(b => b.Visible).ToList();
+        self.Backdrops.ForEach(b => b.Visible = b.Visible && IsBackdropEnabled(b));
+
+        orig(self, scene);
+
+        for (int i = 0; i < oldVisible.Count; i++)
+        {
+            self.Backdrops[i].Visible = oldVisible[i];
+        }
     }
 
     private static bool IsBackdropEnabled(Backdrop backdrop)
@@ -43,36 +55,8 @@ public static class BackdropBlacklist
         };
     }
 
-    private static void BackdropRendererHook(ILContext il)
-    {
-        // Add a second condition to the renderer: render if .Visible *and* IsBackdropEnabled returns true
-        ILCursor cursor = new(il);
-        ILLabel loopEnd = default;
-
-        if (!cursor.TryGotoNext(instr => instr.MatchLdfld<Backdrop>("Visible")))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find BackdropRenderer.Render CIL sequence to hook!");
-            return;
-        }
-
-        // Split to enable compatibility with the Maddie's Helping Hand (previously MaxHelpingHand) mod.
-        // ParallaxFadeOutController.cs in that mod also patches on Visible, but by allowing for code between ldfld and brfalse,
-        // which are next to each other in vanilla, both mods can do their thing
-        ILCursor branch = cursor.Clone();
-        if (!branch.TryGotoNext(instr => instr.MatchBrfalse(out loopEnd)))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find BackdropRenderer.Render branch!");
-            return;
-        }
-
-        branch.Index += 1;
-        branch.Emit(OpCodes.Ldloc_2);
-        branch.EmitDelegate(IsBackdropEnabled);
-        branch.Emit(OpCodes.Brfalse, loopEnd);
-    }
-
     public static void Unload()
     {
-        IL.Celeste.BackdropRenderer.Render -= BackdropRendererHook;
+        On.Celeste.BackdropRenderer.Render -= BackdropRenderer_Render;
     }
 }
