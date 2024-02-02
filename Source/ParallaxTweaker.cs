@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
@@ -11,18 +10,13 @@ using static FewerVisualDistractionsModuleSettings;
 
 public static class ParallaxTweaker
 {
-    private static ILHook parallaxOrigRenderHook;
     public static void Load()
     {
         // Remove background movement due to wind (especially in chapter 4); this does not affect the parallax effect as the player moves
         On.Celeste.Parallax.Update += Parallax_Update;
 
         // Tweak/lock background movement when the player moves (Everest method)
-        IL.Celeste.Parallax.Render += patch_Parallax_Render;
-
-        // Tweak/lock background movement when the player moves (game original method)
-        parallaxOrigRenderHook = new(
-            typeof(Parallax).GetMethod("orig_Render", BindingFlags.Public | BindingFlags.Instance), patch_Parallax_orig_Render);
+        On.Celeste.Parallax.Render += Parallax_Render;
 
         // Lock parallax in dream blocks
         IL.Celeste.DreamBlock.Render += patch_DreamBlock_Render;
@@ -65,42 +59,14 @@ public static class ParallaxTweaker
             (float)Math.CopySign(scroll.Y == 0f ? 0f : 1f, scroll.Y));
     }
 
-    private static void patch_Parallax_orig_Render(ILContext il)
+    private static void Parallax_Render(On.Celeste.Parallax.orig_Render orig, Parallax self, Scene scene)
     {
-        // This patch removes the parallax effect when the player moves, but does not remove the parallax effect due to wind (especially in chapter 4)
-        ILCursor cursor = new(il);
+        var oldScroll = self.Scroll;
+        self.Scroll = ReplaceParallaxScrollVector(self.Scroll); // The method checks if we should actually replace or not
+        orig(self, scene);
 
-        if (!cursor.TryGotoNext(
-            instr => instr.MatchLdarg(0),
-            instr => instr.MatchLdfld<Backdrop>("Scroll")
-        ))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find CIL sequence to hook in Parallax.orig_Render!");
-            return;
-        }
-
-        // Jump past the loading of this.Scroll and insert our delegate to transform it
-        cursor.Index += 2;
-        cursor.EmitDelegate(ReplaceParallaxScrollVector);
-    }
-
-    private static void patch_Parallax_Render(ILContext il)
-    {
-        // Apply the same patch to Everest's modded Parallax.Render, used for some modded maps
-        ILCursor cursor = new(il);
-
-        if (!cursor.TryGotoNext(
-            instr => instr.MatchLdarg(0),
-            instr => instr.MatchLdfld<Backdrop>("Scroll")
-        ))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find CIL sequence to hook in Parallax.Render (Everest patched version)!");
-            return;
-        }
-
-        // Jump past the loading of this.Scroll and insert our delegate to transform it
-        cursor.Index += 2;
-        cursor.EmitDelegate(ReplaceParallaxScrollVector);
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxDuringMovement != ParallaxSettingValue.Standard)
+            self.Scroll = oldScroll;
     }
 
     private static bool DreamBlockParallaxLocked() => FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.DreamBlockStarsFollowCamera;
@@ -136,10 +102,7 @@ public static class ParallaxTweaker
     private static void Planets_Render(On.Celeste.Planets.orig_Render orig, Planets self, Scene scene)
     {
         var oldScroll = self.Scroll;
-
-        if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxDuringMovement != ParallaxSettingValue.Standard)
-            self.Scroll = ReplaceParallaxScrollVector(self.Scroll);
-
+        self.Scroll = ReplaceParallaxScrollVector(self.Scroll); // The method checks if we should actually replace or not
         orig(self, scene);
 
         if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxDuringMovement != ParallaxSettingValue.Standard)
@@ -149,11 +112,8 @@ public static class ParallaxTweaker
     public static void Unload()
     {
         On.Celeste.Parallax.Update -= Parallax_Update;
-        IL.Celeste.Parallax.Render -= patch_Parallax_Render; parallaxOrigRenderHook.Undo();
+        On.Celeste.Parallax.Render -= Parallax_Render;
         IL.Celeste.DreamBlock.Render -= patch_DreamBlock_Render;
         On.Celeste.Planets.Render -= Planets_Render;
-        parallaxOrigRenderHook?.Undo();
-        parallaxOrigRenderHook?.Dispose();
-        parallaxOrigRenderHook = null;
     }
 }
