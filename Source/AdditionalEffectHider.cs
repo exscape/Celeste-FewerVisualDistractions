@@ -17,7 +17,7 @@ public static class AdditionalEffectHider
         On.Celeste.BigWaterfall.RenderDisplacement += BigWaterfall_RenderDisplacement;
 
         // Remove the ripples on the water where the waterfall ends -- the game doesn't do this for the BigWaterfall class
-        IL.Celeste.WaterFall.Update += patch_WaterFall_Update;
+        On.Celeste.WaterFall.Update += WaterFall_Update;
 
         // Remove chapter 6 tentacles (the veil that hides about half the screen until you get close)
         On.Celeste.ReflectionTentacles.Render += ReflectionTentacles_Render;
@@ -33,7 +33,6 @@ public static class AdditionalEffectHider
         IL.Celeste.WindSnowFG.Render += patch_WindSnowFG_Render;
         IL.Celeste.StardustFG.Render += patch_StardustFG_Render;
     }
-
 
     private static int ReplaceWindSnowAmount(int num)
     {
@@ -189,34 +188,18 @@ public static class AdditionalEffectHider
     }
 
     public static bool ShouldDrawWaterfalls() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowWaterfalls;
-    private static void patch_WaterFall_Update(ILContext il)
+
+    private static void WaterFall_Update(On.Celeste.WaterFall.orig_Update orig, WaterFall self)
     {
-        // Patch out most of Update if waterfalls are disabled; specifically, we jump over the two if statements,
-        // leaving only the audio stuff and the base.Update() call
-        
-        ILCursor cursor = new(il);
+        var oldWater = self.water;
 
-        if (!cursor.TryGotoNext(
-            instr => instr.MatchLdarg(0),
-            instr => instr.MatchLdfld<WaterFall>("water")
-            ))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find first Waterfall.Update CIL sequence to hook!");
-            return;
-        }
+        // Skip both if statements in the original method; both require this.water != null, so this is easy!
+        if (!ShouldDrawWaterfalls())
+            self.water = null;
 
-        ILCursor afterIfStatements = cursor.Clone();
-        if (!afterIfStatements.TryGotoNext(
-            instr => instr.MatchLdarg(0),
-            instr => instr.MatchCall<Entity>("Update")
-            ))
-        {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find second Waterfall.Update CIL sequence to hook!");
-            return;
-        }
+        orig(self);
 
-        cursor.EmitDelegate(ShouldDrawWaterfalls);
-        cursor.Emit(OpCodes.Brfalse, afterIfStatements.Next);
+        self.water = oldWater;
     }
 
     public static void Unload()
@@ -225,7 +208,7 @@ public static class AdditionalEffectHider
         On.Celeste.BigWaterfall.Render -= BigWaterfall_Render;
         On.Celeste.WaterFall.RenderDisplacement -= WaterFall_RenderDisplacement;
         On.Celeste.BigWaterfall.RenderDisplacement -= BigWaterfall_RenderDisplacement;
-        IL.Celeste.WaterFall.Update -= patch_WaterFall_Update;
+        On.Celeste.WaterFall.Update -= WaterFall_Update;
         On.Celeste.ReflectionTentacles.Render -= ReflectionTentacles_Render;
         IL.Celeste.DisplacementRenderer.BeforeRender -= patch_DisplacementRenderer_BeforeRender;
         IL.Celeste.Pico8.Classic.Draw -= patch_Classic_Draw;
