@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
 using Monocle;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
 
 namespace Celeste.Mod.FewerVisualDistractions;
 using static FewerVisualDistractionsModuleSettings;
 
 public static class ParallaxTweaker
 {
+    static On.Celeste.DreamBlock.orig_PutInside PutInside_orig = default;
+
     public static void Load()
     {
         // Remove background movement due to wind (especially in chapter 4); this does not affect the parallax effect as the player moves
@@ -19,7 +19,8 @@ public static class ParallaxTweaker
         On.Celeste.Parallax.Render += Parallax_Render;
 
         // Lock parallax in dream blocks
-        IL.Celeste.DreamBlock.Render += patch_DreamBlock_Render;
+        On.Celeste.DreamBlock.Render += DreamBlock_Render;
+        On.Celeste.DreamBlock.PutInside += DreamBlock_PutInside;
 
         // Respect parallax settings for the Planets backdrop
         On.Celeste.Planets.Render += Planets_Render;
@@ -69,34 +70,44 @@ public static class ParallaxTweaker
             self.Scroll = oldScroll;
     }
 
-    private static bool DreamBlockParallaxLocked() => FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.DreamBlockStarsFollowCamera;
-    private static void patch_DreamBlock_Render(ILContext il)
+    private static void DreamBlock_Render(On.Celeste.DreamBlock.orig_Render orig, DreamBlock self)
     {
-        ILCursor cursor = new(il);
-
-        if (!cursor.TryGotoNext(
-            instr => instr.MatchLdloc(4),
-            instr => instr.MatchLdloc(1)
-            ))
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.DreamBlockStarsFollowCamera)
         {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find DreamBlock.Render CIL sequence to hook!");
+            orig(self);
             return;
         }
 
-        ILCursor jumpTarget = cursor.Clone();
+        // Initialize the delegate/pointer if needed
+        if (PutInside_orig == null)
+            self.PutInside(Vector2.One);
 
-        if (!jumpTarget.TryGotoNext(
-            instr => instr.MatchLdarg(0),
-            instr => instr.MatchLdloc(4),
-            instr => instr.MatchCallvirt<DreamBlock>("PutInside")
-            ))
+        var cameraPosition = self.SceneAs<Level>().Camera.Position;
+        var positions = self.particles.Select(p => p.Position).ToArray();
+
+        // Null out the movement added for each particle in the foreach loop
+        for (int i = 0; i < self.particles.Length; i++)
         {
-            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find DreamBlock.Render CIL sequence for jump target!");
-            return;
+            self.particles[i].Position = PutInside_orig(self, self.particles[i].Position);
+            self.particles[i].Position -= cameraPosition * (0.3f + 0.25f * self.particles[i].Layer);
         }
 
-        cursor.EmitDelegate(DreamBlockParallaxLocked);
-        cursor.Emit(OpCodes.Brtrue, jumpTarget.Next);
+        orig(self);
+
+        for (int i = 0; i < positions.Length; i++)
+        {
+            self.particles[i].Position = positions[i];
+        }
+    }
+
+    private static Vector2 DreamBlock_PutInside(On.Celeste.DreamBlock.orig_PutInside orig, DreamBlock self, Vector2 pos)
+    {
+        PutInside_orig = orig;
+
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.DreamBlockStarsFollowCamera)
+            return orig(self, pos);
+        else
+            return pos;
     }
 
     private static void Planets_Render(On.Celeste.Planets.orig_Render orig, Planets self, Scene scene)
@@ -113,7 +124,8 @@ public static class ParallaxTweaker
     {
         On.Celeste.Parallax.Update -= Parallax_Update;
         On.Celeste.Parallax.Render -= Parallax_Render;
-        IL.Celeste.DreamBlock.Render -= patch_DreamBlock_Render;
+        On.Celeste.DreamBlock.Render -= DreamBlock_Render;
+        On.Celeste.DreamBlock.PutInside -= DreamBlock_PutInside;
         On.Celeste.Planets.Render -= Planets_Render;
     }
 }
