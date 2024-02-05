@@ -9,6 +9,7 @@ using static FewerVisualDistractionsModuleSettings;
 public class WindIndicator : Entity
 {
     private Level level;
+    private string oldLevel = null;
     private bool initialDraw = true;
     private float rotation = 0f;
     private float lastRotation = (float)Math.PI;
@@ -23,6 +24,7 @@ public class WindIndicator : Entity
 
         On.Celeste.Player.OnTransition += Player_OnTransition;
     }
+    private static string ScreenUniqueID(Level level) => $"{level.Session.Area.SID}|{level.Session.Area.Mode}|{level.Session.LevelData.Name}";
 
     private void Player_OnTransition(On.Celeste.Player.orig_OnTransition orig, Player self)
     {
@@ -34,8 +36,13 @@ public class WindIndicator : Entity
 
     public void SwitchLevel(Level level)
     {
+        if (this.level != null)
+            oldLevel = ScreenUniqueID(this.level);
+
         this.level = level;
-        haveEncounteredWind = level.Wind.Length() > 0;
+
+        if (ScreenUniqueID(level) != oldLevel)
+            haveEncounteredWind = level.Wind.Length() > 0;
 
         // Player.OnTransition isn't called on the initial level load
         UpdateWindTriggers();
@@ -54,7 +61,7 @@ public class WindIndicator : Entity
         if (!haveEncounteredWind)
             haveEncounteredWind = level.Wind.Length() > 0;
 
-        bool shouldDisplay = haveEncounteredWind && (levelHasWindTriggers || (level.windController != null && level.windController.pattern != WindController.Patterns.None));
+        bool shouldDisplay = !level.InCutscene && haveEncounteredWind && (levelHasWindTriggers || (level.windController != null && level.windController.pattern != WindController.Patterns.None));
 
         if (FewerVisualDistractionsModule.Settings.WindIndicatorType == WindIndicatorTypeValue.Graphical)
             RenderGraphicalIndicator(shouldDisplay); // Always called, as we need to animate when shouldDisplay has just changed to to false
