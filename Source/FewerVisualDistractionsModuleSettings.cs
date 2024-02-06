@@ -1,3 +1,7 @@
+using Celeste.Mod.UI;
+using System.Collections.Generic;
+using YamlDotNet.Serialization;
+
 namespace Celeste.Mod.FewerVisualDistractions {
     public class FewerVisualDistractionsModuleSettings : EverestModuleSettings {
 
@@ -174,5 +178,26 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         [SettingSubText("Snow showing wind; amount can be adjusted above")]
         public bool WindSnow { get; set; } = true;
+
+        // Third-party backdrops seen since the mod was first installed.
+        // Allows for toggling these (in a submenu only visible in the main menu) without having to add support for every custom mod.
+        [SettingIgnore]
+        public SortedDictionary<string, bool> AdditionalBackdrops { get; set; } = [];
+
+        [YamlIgnore]
+        public int BackdropsFromMods { get; set; } = 0;
+
+        public void CreateBackdropsFromModsEntry(TextMenu menu, bool inGame)
+        {
+            if (!inGame)
+            {
+                menu.Add(new TextMenu.Button("Backdrops From Mods")
+                    .Pressed(() => OuiGenericMenu.Goto<OuiAdditionalBackdropMenu>(overworld => overworld.Goto<OuiModOptions>(), new object[0])));
+            }
+            else
+            {
+                menu.Add(new TextMenu.Button("Backdrops From Mods: only available in main menu"));
+            }
+        }
     }
 }

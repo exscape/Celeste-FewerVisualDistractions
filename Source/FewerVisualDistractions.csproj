@@ -17,6 +17,7 @@
     <ItemGroup>
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
         <PackageReference Include="MonoModReorg.RuntimeDetour" Version="23.3.22.1" PrivateAssets="all" ExcludeAssets="runtime" />
+        <PackageReference Include="YamlDotNet" Version="15.1.1" />
     </ItemGroup>
 
     <ItemGroup>

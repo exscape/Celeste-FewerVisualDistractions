@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Celeste.Mod.FewerVisualDistractions;
 using static FewerVisualDistractionsModuleSettings;
@@ -8,6 +9,20 @@ public static class BackdropBlacklist
     public static void Load()
     {
         On.Celeste.BackdropRenderer.Render += BackdropRenderer_Render;
+        On.Celeste.Backdrop.ctor += Backdrop_ctor;
+    }
+
+    private static void Backdrop_ctor(On.Celeste.Backdrop.orig_ctor orig, Backdrop self)
+    {
+        orig(self);
+
+        var type = self.GetType();
+
+        if (type.Namespace == "Celeste")
+            return;
+
+        // This is a modded backdrop. Add it to our list of known mod backdrops, so that we can show a toggle for it in the menu
+        FewerVisualDistractionsModule.Settings.AdditionalBackdrops.TryAdd(type.FullName, true);
     }
 
     private static void BackdropRenderer_Render(On.Celeste.BackdropRenderer.orig_Render orig, BackdropRenderer self, Monocle.Scene scene)
@@ -30,7 +45,7 @@ public static class BackdropBlacklist
         if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == OverrideAllValue.HideAll)
             return false;
 
-        return backdrop switch
+        bool? shouldDisplay = backdrop switch
         {
             BlackholeBG => FewerVisualDistractionsModule.Settings.BlackholeBG,
             CoreStarsFG => FewerVisualDistractionsModule.Settings.CoreStarsFG,
@@ -51,12 +66,20 @@ public static class BackdropBlacklist
             StarsBG => FewerVisualDistractionsModule.Settings.StarsBG,
             Tentacles => FewerVisualDistractionsModule.Settings.Tentacles,
             WindSnowFG => FewerVisualDistractionsModule.Settings.WindSnow,
-            _ => true
+            _ => null
         };
+
+        if (shouldDisplay.HasValue)
+            return shouldDisplay.Value;
+
+        // If we're still here, the backdrop isn't one available in the stock game.
+        // We should have a value for this in the settings, but if we don't, display the backdrop as a default.
+        return FewerVisualDistractionsModule.Settings.AdditionalBackdrops.GetValueOrDefault(backdrop.GetType().FullName, true);
     }
 
     public static void Unload()
     {
         On.Celeste.BackdropRenderer.Render -= BackdropRenderer_Render;
+        On.Celeste.Backdrop.ctor -= Backdrop_ctor;
     }
 }
