@@ -22,7 +22,7 @@ public static class BackdropBlacklist
             return;
 
         // This is a modded backdrop. Add it to our list of known mod backdrops, so that we can show a toggle for it in the menu
-        FewerVisualDistractionsModule.Settings.AdditionalBackdrops.TryAdd(type.FullName, true);
+        FewerVisualDistractionsModule.Settings.AdditionalBackdrops.TryAdd(type.FullName, (type.Assembly.GetName().Name, true));
     }
 
     private static void BackdropRenderer_Render(On.Celeste.BackdropRenderer.orig_Render orig, BackdropRenderer self, Monocle.Scene scene)
@@ -74,7 +74,7 @@ public static class BackdropBlacklist
 
         // If we're still here, the backdrop isn't one available in the stock game.
         // We should have a value for this in the settings, but if we don't, display the backdrop as a default.
-        return FewerVisualDistractionsModule.Settings.AdditionalBackdrops.GetValueOrDefault(backdrop.GetType().FullName, true);
+        return FewerVisualDistractionsModule.Settings.AdditionalBackdrops.GetValueOrDefault(backdrop.GetType().FullName, (null, true)).Item2;
     }
 
     public static void Unload()

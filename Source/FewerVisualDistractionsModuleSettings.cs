@@ -181,8 +181,10 @@ namespace Celeste.Mod.FewerVisualDistractions {
 
         // Third-party backdrops seen since the mod was first installed.
         // Allows for toggling these (in a submenu only visible in the main menu) without having to add support for every custom mod.
+        // Key: Type FullName (instance.GetType().FullName)
+        // Value: (Assembly as string, backdrop enabled)
         [SettingIgnore]
-        public SortedDictionary<string, bool> AdditionalBackdrops { get; set; } = [];
+        public SortedDictionary<string, (string, bool)> AdditionalBackdrops { get; set; } = [];
 
         [YamlIgnore]
         public int BackdropsFromMods { get; set; } = 0;

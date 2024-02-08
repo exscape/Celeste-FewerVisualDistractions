@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.UI;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Celeste.Mod.FewerVisualDistractions;
@@ -20,7 +21,7 @@ class OuiAdditionalBackdropMenu : OuiGenericMenu, OuiModOptions.ISubmenu
         var modRegex = new Regex(@"^Celeste\.Mod\.([^.]+)");
         var backdropRegex = new Regex(@"\.([^.]+)$");
 
-        foreach (var (fullName, value) in FewerVisualDistractionsModule.Settings.AdditionalBackdrops)
+        foreach (var (fullName, (assembly, value)) in FewerVisualDistractionsModule.Settings.AdditionalBackdrops)
         {
             Match modMatch = modRegex.Match(fullName);
             Match backdropMatch = backdropRegex.Match(fullName);
@@ -32,8 +33,13 @@ class OuiAdditionalBackdropMenu : OuiGenericMenu, OuiModOptions.ISubmenu
             else
                 displayName = fullName;
 
+            // Hide entries from mods not currently active.
+            // Save the settings though, in case it's reenabled later.
+            if (!Everest.Modules.Any(m => m.GetType().Assembly.GetName().Name == assembly))
+                continue;
+
             menu.Add(new TextMenu.OnOff(displayName, value).Change(newValue =>
-                FewerVisualDistractionsModule.Settings.AdditionalBackdrops[fullName] = newValue));
+                FewerVisualDistractionsModule.Settings.AdditionalBackdrops[fullName] = (assembly, newValue)));
         }
     }
 }
