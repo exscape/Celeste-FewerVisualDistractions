@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Monocle;
@@ -45,25 +46,29 @@ public static class ParallaxTweaker
         orig(self, scene);
     }
 
-    public static Vector2 ReplaceParallaxScrollVector(Vector2 scroll)
+    public static Vector2 ReplaceParallaxScrollVector(Vector2 scroll, bool loopX, bool loopY)
     {
         if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == ParallaxSettingValue.Standard)
             return scroll;
         else if (FewerVisualDistractionsModule.Settings.ParallaxDuringMovement == ParallaxSettingValue.Locked)
             return Vector2.Zero;
 
-        // We want a vector with 1 for each nonzero component.
-        // Just in case a negative value is used elsewhere, copy the sign too.
-        // To have this truly follow the camera we'd use Vector2.One, but the backgrounds aren't designed for that, and so we'll quickly run out of visible pixels (usually in the Y direction).
+        // This used to be the "Follow Camera" case, but that code didn't work very well, and indeed had outright bugs:
+        // A scroll value of -0.02 (used in the Strawberry Jam lobby, for one) was replaced with -1, so the sky moved at breakneck speeds
+        // when you moved.
+        // The name is still used for the setting, but the UI shows it as "Mixed".
+        //
+        // Ideally these should use 0f in the else clauses, but that causes issues on some levels, e.g. The Summit (at least near the top), as
+        // *part* of the background turns black.
         return new Vector2(
-            (float)Math.CopySign(scroll.X == 0f ? 0f : 1f, scroll.X),
-            (float)Math.CopySign(scroll.Y == 0f ? 0f : 1f, scroll.Y));
+            (loopX && scroll.X > 0.2f) ? 1f : scroll.X,
+            (loopY && scroll.Y > 0.2f) ? 1f : scroll.Y);
     }
 
     private static void Parallax_Render(On.Celeste.Parallax.orig_Render orig, Parallax self, Scene scene)
     {
         var oldScroll = self.Scroll;
-        self.Scroll = ReplaceParallaxScrollVector(self.Scroll); // The method checks if we should actually replace or not
+        self.Scroll = ReplaceParallaxScrollVector(self.Scroll, self.LoopX, self.LoopY); // The method checks if we should actually replace or not
         orig(self, scene);
 
         if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxDuringMovement != ParallaxSettingValue.Standard)
@@ -113,7 +118,7 @@ public static class ParallaxTweaker
     private static void Planets_Render(On.Celeste.Planets.orig_Render orig, Planets self, Scene scene)
     {
         var oldScroll = self.Scroll;
-        self.Scroll = ReplaceParallaxScrollVector(self.Scroll); // The method checks if we should actually replace or not
+        self.Scroll = ReplaceParallaxScrollVector(self.Scroll, self.LoopX, self.LoopY); // The method checks if we should actually replace or not
         orig(self, scene);
 
         if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxDuringMovement != ParallaxSettingValue.Standard)

@@ -76,12 +76,15 @@ There is also a separate parallax effect that makes the entire background consta
 The mod has several settings relating to parallax:
 
 * "Max Parallax Speed" only adjusts the speed of the background motion due to wind. Set to 0 in order to disable this effect entirely.
-* "Parallax During Movement" adjusts the behavior of the background motion as the camera moves, and has three settings: "Standard" (multiple layers can move at different speeds), "Follow Camera" (the effect is disabled, and the background moves at the same rate as the level itself) and "Locked" (the background is fixed in place and does not move even when the camera moves).
+* "Parallax During Movement" adjusts the behavior of the background motion as the camera moves, and has three settings: "Standard" (multiple layers can move at different speeds), "Locked" (the background is fixed in place and does not move even when the camera moves) and "Mixed" (backgrounds follow the camera where possible without artifacts, and stays at standard otherwise).
 * Finally, there's the "Dream Block Stars Follow Camera" setting which applies the above logic to the twinkling, colorful stars in dream blocks (chapter 2) when enabled.
 
-I feel that "Follow Camera" is the least bothersome type for the latter two settings. **However, this mode has a big issue in some (especially very vertical) levels: we move faster through the image than intended, and so it can happen that we "run out" of background image, and the background becomes black.**  
-Therefore, I suggest using "Standard" wherever possible for a more immersive look.  
-This is usually not an issue for the mostly horizontal levels, as the game typically repeats the same background on the horizontal axis, but typically not on the vertical axis.
+**"Parallax During Movement" is a setting I'm considering removing** as it is hard (if not impossible) to implement correctly such that it works with all maps (including mods) without having to specifically add support for each map.
+
+The previous setting "Follow Camera" was replaced by "Mixed" in v0.9.3 as it had pretty severe issues that made it unusable on many maps (vanilla and modded).  
+"Mixed" tries to do the same thing (have the background move at the same speed as the camera) where it makes sense and won't cause graphical issues, and keeps the movement unchanged if not -- specifically, it only follows the camera if the background repeats *and* the parallax is greater than a certain amount (currently 0.2).
+However, it is quite close to Standard in appearance, yet can cause subtle unintended graphical changes, so I suggest using "Standard" where possible.  
+"Locked" can also cause issues in rare cases, such as the end of Chapter 7.
 
 # Recommended settings
 
@@ -92,7 +95,7 @@ Screen Wipes: Off
 Rotating Death Effect: Remove flashing  
 Warping Death Effect: Off  
 Max Parallax Speed: 0 (makes the background static in chapters where it moves even when you stand still)  
-Parallax During Movement: Standard (or Follow Camera, but see "Parallax settings" above for issues with that setting)  
+Parallax During Movement: Standard (or Mixed, but it can detract from the creative intent without much benefit in many cases)  
 Dream Block Stars Follow Camera: On  
 Show Waterfalls: Off (though they are pretty)  
 Show Tentacles: Off (makes the game itself easier though, unlike almost every other setting)  
