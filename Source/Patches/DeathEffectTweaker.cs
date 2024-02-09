@@ -5,7 +5,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 
-namespace Celeste.Mod.FewerVisualDistractions;
+namespace Celeste.Mod.FewerVisualDistractions.Patches;
 using static FewerVisualDistractionsModuleSettings;
 
 public static class DeathEffectTweaker

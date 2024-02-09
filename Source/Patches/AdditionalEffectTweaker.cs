@@ -3,9 +3,9 @@ using MonoMod.Cil;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Celeste.Mod.FewerVisualDistractions;
+namespace Celeste.Mod.FewerVisualDistractions.Patches;
 
-public static class AdditionalEffectHider
+public static class AdditionalEffectTweaker
 {
     private static List<float> origCloudSpeeds;
     private static List<Pico8.Classic.Particle> origParticles;

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Celeste.Mod.FewerVisualDistractions;
+namespace Celeste.Mod.FewerVisualDistractions.UI;
 
 class OuiAdditionalBackdropMenu : OuiGenericMenu, OuiModOptions.ISubmenu
 {

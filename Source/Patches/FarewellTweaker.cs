@@ -1,4 +1,4 @@
-﻿namespace Celeste.Mod.FewerVisualDistractions;
+﻿namespace Celeste.Mod.FewerVisualDistractions.Patches;
 
 public static class FarewellTweaker
 {
