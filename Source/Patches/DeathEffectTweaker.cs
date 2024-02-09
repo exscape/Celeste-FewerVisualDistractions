@@ -29,7 +29,7 @@ public static class DeathEffectTweaker
     {
         var oldScreenWipe = self.Wipe;
 
-        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.ScreenWipes)
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.DeathEffects.ScreenWipes)
             self.Wipe = null;
 
         orig(self);
@@ -37,7 +37,7 @@ public static class DeathEffectTweaker
         self.Wipe = oldScreenWipe;
     }
 
-    public static bool ShouldShowDeathWarpEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.WarpingDeathEffect;
+    public static bool ShouldShowDeathWarpEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.DeathEffects.WarpingDeathEffect;
     private static void patch_PlayerDeadBody_DeathRoutine(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -65,11 +65,11 @@ public static class DeathEffectTweaker
 
     private static void DeathEffect_Draw(On.Celeste.DeathEffect.orig_Draw orig, Vector2 position, Color color, float ease)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.RotatingDeathEffect != DeathEffectSettingValue.Hidden)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.DeathEffects.RotatingDeathEffect != DeathEffectSettingValue.Hidden)
             orig(position, color, ease);
     }
 
-    public static bool ShouldUseSingleColorDeathEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.RotatingDeathEffect == DeathEffectSettingValue.NoFlashes;
+    public static bool ShouldUseSingleColorDeathEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.DeathEffects.RotatingDeathEffect == DeathEffectSettingValue.NoFlashes;
     private static void patch_DeathEffect_Draw(ILContext il)
     {
         ILCursor cursor = new(il);

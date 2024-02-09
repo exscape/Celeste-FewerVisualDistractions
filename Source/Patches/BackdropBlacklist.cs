@@ -40,32 +40,32 @@ public static class BackdropBlacklist
 
     private static bool IsBackdropEnabled(Backdrop backdrop)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == OverrideAllValue.ShowAll)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Backdrops.OverrideAllBackdrops == OverrideAllValue.ShowAll)
             return true;
-        if (FewerVisualDistractionsModule.Settings.OverrideAllBackdrops == OverrideAllValue.HideAll)
+        if (FewerVisualDistractionsModule.Settings.Backdrops.OverrideAllBackdrops == OverrideAllValue.HideAll)
             return false;
 
         bool? shouldDisplay = backdrop switch
         {
-            BlackholeBG => FewerVisualDistractionsModule.Settings.BlackholeBG,
-            CoreStarsFG => FewerVisualDistractionsModule.Settings.CoreStarsFG,
-            DreamStars => FewerVisualDistractionsModule.Settings.DreamStars,
-            FinalBossStarfield => FewerVisualDistractionsModule.Settings.FinalBossStarfield,
-            Godrays => FewerVisualDistractionsModule.Settings.Godrays,
-            HeatWave => FewerVisualDistractionsModule.Settings.HeatWave,
-            MirrorFG => FewerVisualDistractionsModule.Settings.MirrorFG,
-            NorthernLights => FewerVisualDistractionsModule.Settings.NorthernLights,
-            Parallax => FewerVisualDistractionsModule.Settings.Parallax,
-            Petals => FewerVisualDistractionsModule.Settings.Petals,
-            Planets => FewerVisualDistractionsModule.Settings.Planets,
-            RainFG => FewerVisualDistractionsModule.Settings.RainFG,
-            ReflectionFG => FewerVisualDistractionsModule.Settings.ReflectionFG,
-            Snow => FewerVisualDistractionsModule.Settings.Snow,
-            StardustFG => FewerVisualDistractionsModule.Settings.StardustFG,
-            Starfield => FewerVisualDistractionsModule.Settings.Starfield,
-            StarsBG => FewerVisualDistractionsModule.Settings.StarsBG,
-            Tentacles => FewerVisualDistractionsModule.Settings.Tentacles,
-            WindSnowFG => FewerVisualDistractionsModule.Settings.WindSnow,
+            BlackholeBG => FewerVisualDistractionsModule.Settings.Backdrops.BlackholeBG,
+            CoreStarsFG => FewerVisualDistractionsModule.Settings.Backdrops.CoreStarsFG,
+            DreamStars => FewerVisualDistractionsModule.Settings.Backdrops.DreamStars,
+            FinalBossStarfield => FewerVisualDistractionsModule.Settings.Backdrops.FinalBossStarfield,
+            Godrays => FewerVisualDistractionsModule.Settings.Backdrops.Godrays,
+            HeatWave => FewerVisualDistractionsModule.Settings.Backdrops.HeatWave,
+            MirrorFG => FewerVisualDistractionsModule.Settings.Backdrops.MirrorFG,
+            NorthernLights => FewerVisualDistractionsModule.Settings.Backdrops.NorthernLights,
+            Parallax => FewerVisualDistractionsModule.Settings.Backdrops.Parallax,
+            Petals => FewerVisualDistractionsModule.Settings.Backdrops.Petals,
+            Planets => FewerVisualDistractionsModule.Settings.Backdrops.Planets,
+            RainFG => FewerVisualDistractionsModule.Settings.Backdrops.RainFG,
+            ReflectionFG => FewerVisualDistractionsModule.Settings.Backdrops.ReflectionFG,
+            Snow => FewerVisualDistractionsModule.Settings.Backdrops.Snow,
+            StardustFG => FewerVisualDistractionsModule.Settings.Backdrops.StardustFG,
+            Starfield => FewerVisualDistractionsModule.Settings.Backdrops.Starfield,
+            StarsBG => FewerVisualDistractionsModule.Settings.Backdrops.StarsBG,
+            Tentacles => FewerVisualDistractionsModule.Settings.Backdrops.Tentacles,
+            WindSnowFG => FewerVisualDistractionsModule.Settings.Backdrops.WindSnow,
             _ => null
         };
 

@@ -30,14 +30,14 @@ public static class FarewellTweaker
     private static void Bolt_Render(On.Celeste.LightningRenderer.Bolt.orig_Render orig, object self)
     {
         // This method handles the occasional lightning bolts inside the areas
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowLightningBolts)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowLightningBolts)
             orig(self);
     }
 
     private static void LightningRenderer_DrawBezierLightning(On.Celeste.LightningRenderer.orig_DrawBezierLightning orig, ref int index, ref Microsoft.Xna.Framework.Graphics.VertexPositionColor[] verts, uint seed, Microsoft.Xna.Framework.Vector2 pos, Microsoft.Xna.Framework.Vector2 a, Microsoft.Xna.Framework.Vector2 b, float anchor, int steps, Microsoft.Xna.Framework.Color color)
     {
         // This method handles the smaller, curved lightning bolts that randomly shows up around the edges
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowLightningBolts)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowLightningBolts)
             orig(ref index, ref verts, seed, pos, a, b, anchor, steps, color);
     }
 
@@ -46,7 +46,7 @@ public static class FarewellTweaker
         orig(self);
 
         // Freeze/animate the edges of the lightning area
-        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.AnimateLightningAreas)
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.VariousEffects.AnimateLightningAreas)
             self.edgeSeed = 1;
 
     }
@@ -63,12 +63,12 @@ public static class FarewellTweaker
 
         if (self is Decal decal)
         {
-            if (decal.Name.Contains("farewell/creature_") && !FewerVisualDistractionsModule.Settings.ShowFloatingCreatures)
+            if (decal.Name.Contains("farewell/creature_") && !FewerVisualDistractionsModule.Settings.VariousEffects.ShowFloatingCreatures)
                 shouldRender = false;
-            else if (decal.Name.Contains("farewell/glitch_") && !FewerVisualDistractionsModule.Settings.AnimateGlitches)
+            else if (decal.Name.Contains("farewell/glitch_") && !FewerVisualDistractionsModule.Settings.VariousEffects.AnimateGlitches)
                 shouldRender = false;
         }
-        else if (self is FloatingDebris && !FewerVisualDistractionsModule.Settings.ShowFloatingDebris)
+        else if (self is FloatingDebris && !FewerVisualDistractionsModule.Settings.VariousEffects.ShowFloatingDebris)
             shouldRender = false;
 
         if (shouldRender)
@@ -77,13 +77,13 @@ public static class FarewellTweaker
 
     private static void MoonCreature_Render(On.Celeste.MoonCreature.orig_Render orig, MoonCreature self)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowFloatingCreatures)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowFloatingCreatures)
             orig(self);
     }
 
     private static void CrystalStaticSpinner_UpdateHue(On.Celeste.CrystalStaticSpinner.orig_UpdateHue orig, CrystalStaticSpinner self)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.AnimateCrystalColors)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.AnimateCrystalColors)
             orig(self);
     }
 
@@ -91,13 +91,13 @@ public static class FarewellTweaker
     {
         orig(self);
 
-        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.AnimateBillboardNoise)
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.VariousEffects.AnimateBillboardNoise)
             self.Seed = 1;
     }
 
     private static SoundSource SoundSource_Play(On.Celeste.SoundSource.orig_Play orig, SoundSource self, string path, string param, float value)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.AnimateBillboardNoise || !path.Contains("tutorial_static"))
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.AnimateBillboardNoise || !path.Contains("tutorial_static"))
             return orig(self, path, param, value);
         else
             return self;
@@ -109,7 +109,7 @@ public static class FarewellTweaker
 
         // BlackholeBG.Update() doesn't update the animation state if Visible is false.
         // The value is re-set in BlackholeBG_Update (below), so the backdrop will still be rendered where it should be rendered
-        if (self is BlackholeBG && FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.AnimateBlackHoleBackground)
+        if (self is BlackholeBG && FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.VariousEffects.AnimateBlackHoleBackground)
             self.Visible = false;
     }
 

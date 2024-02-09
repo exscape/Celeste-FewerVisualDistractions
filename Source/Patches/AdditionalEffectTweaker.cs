@@ -42,7 +42,7 @@ public static class AdditionalEffectTweaker
     private static int ReplaceWindSnowAmount(int num)
     {
         if (FewerVisualDistractionsModule.Settings.ModEnabled)
-            return (int)(num * FewerVisualDistractionsModule.Settings.WindSnowAndStardustAmount / 100f);
+            return (int)(num * FewerVisualDistractionsModule.Settings.WindSettings.WindSnowAndStardustAmount / 100f);
         else
             return num;
     }
@@ -93,8 +93,8 @@ public static class AdditionalEffectTweaker
 
     private static void Classic_Update(On.Celeste.Pico8.Classic.orig_Update orig, Pico8.Classic self)
     {
-        bool shouldAnimateClouds = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Pico8CloudMovement;
-        bool shouldRenderSnow = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowPico8Snow;
+        bool shouldAnimateClouds = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.Pico8CloudMovement;
+        bool shouldRenderSnow = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowPico8Snow;
 
         if (!shouldRenderSnow && self.particles.Count > 0)
             self.particles.Clear();
@@ -114,7 +114,7 @@ public static class AdditionalEffectTweaker
 
     private static void HeatWave_RenderDisplacement(On.Celeste.HeatWave.orig_RenderDisplacement orig, HeatWave self, Level level)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowHeatDistortion)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowHeatDistortion)
             orig(self, level);
     }
 
@@ -143,11 +143,11 @@ public static class AdditionalEffectTweaker
 
     private static void ReflectionTentacles_Render(On.Celeste.ReflectionTentacles.orig_Render orig, ReflectionTentacles self)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowTentacles)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowTentacles)
             orig(self);
     }
 
-    public static bool ShouldDrawWaterfalls() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ShowWaterfalls;
+    public static bool ShouldDrawWaterfalls() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowWaterfalls;
 
     private static void WaterFall_Update(On.Celeste.WaterFall.orig_Update orig, WaterFall self)
     {

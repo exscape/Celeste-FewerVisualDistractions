@@ -13,6 +13,11 @@
         <PackageReference PrivateAssets="all" ExcludeAssets="runtime" />
         <Reference Private="false" />
     </ItemDefinitionGroup>
+    <ItemGroup>
+      <Compile Remove="Properties\**" />
+      <EmbeddedResource Remove="Properties\**" />
+      <None Remove="Properties\**" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
