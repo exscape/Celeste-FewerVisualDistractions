@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Reflection;
 using Celeste.Mod.FewerVisualDistractions.Patches;
-using Celeste.Mod.UI;
-using FMOD.Studio;
 
 namespace Celeste.Mod.FewerVisualDistractions;
 

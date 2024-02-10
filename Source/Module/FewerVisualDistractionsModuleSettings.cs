@@ -71,10 +71,10 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
     [SettingSubMenu]
     public class DeathEffectsMenu
     {
-        [SettingSubText("Show screen wipes when the level reloads, e.g. on death")]
+        [SettingSubText("Show screen wipes on death?")]
         public bool ScreenWipes { get; set; } = true;
 
-        [SettingSubText("Changes the rotating objects around the player as they die and respawn")]
+        [SettingSubText("Changes the rotating objects around the player during death and respawn")]
         public DeathEffectSettingValue RotatingDeathEffect { get; set; } = DeathEffectSettingValue.Standard;
 
         [SettingSubText("Enable the warping effect around the player as they die?")]
@@ -88,6 +88,7 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
     public class ParallaxSettingsMenu
     {
         [SettingRange(0, 50, true)]
+        [SettingName("FewerVisualDistractions_Settings_MaxParallaxSpeed")]
         [SettingSubText("Limits the speed of the background parallax (e.g. in windy areas)")]
         public int MaxParallaxSpeed { get; set; } = 50;
 
@@ -119,14 +120,14 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         [SettingSubText("Show background floating creatures in Farewell?")]
         public bool ShowFloatingCreatures { get; set; } = true;
 
-        [SettingSubText("Allow rainbow colored crystals in Farewell to change colors?")]
-        public bool AnimateCrystalColors { get; set; } = true;
+        [SettingSubText("Show lightning bolts inside Farewell lightning/electrical areas?")]
+        public bool ShowLightningBolts { get; set; } = true;
 
         [SettingSubText("Animate edges of Farewell lightning/electrical areas?")]
         public bool AnimateLightningAreas { get; set; } = true;
 
-        [SettingSubText("Show lightning bolts inside Farewell lightning/electrical areas?")]
-        public bool ShowLightningBolts { get; set; } = true;
+        [SettingSubText("Allow rainbow colored crystals in Farewell to change colors?")]
+        public bool AnimateCrystalColors { get; set; } = true;
 
         [SettingSubText("Animate background noise on billboards (tutorial screens) in Farewell?")]
         public bool AnimateBillboardNoise { get; set; } = true;
@@ -192,7 +193,7 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         [SettingSubText("Snow mostly used in chapter 1")]
         public bool Snow { get; set; } = true;
 
-        [SettingSubText("Particles showing wind in Farewell; amount can be adjusted above")]
+        [SettingSubText("Particles showing wind in Farewell; amount can be adjusted in Wind Settings")]
         public bool StardustFG { get; set; } = true;
 
         [SettingSubText("Stars moving around in Farewell")]
@@ -203,7 +204,7 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
 
         public bool Tentacles { get; set; } = true;
 
-        [SettingSubText("Snow showing wind; amount can be adjusted above")]
+        [SettingSubText("Snow showing wind; amount can be adjusted in Wind Settings")]
         public bool WindSnow { get; set; } = true;
     }
 
