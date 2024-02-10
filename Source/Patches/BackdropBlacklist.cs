@@ -40,11 +40,10 @@ public static class BackdropBlacklist
 
     private static bool IsBackdropEnabled(Backdrop backdrop)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Backdrops.OverrideAllBackdrops == OverrideAllValue.ShowAll)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled)
             return true;
-        if (FewerVisualDistractionsModule.Settings.Backdrops.OverrideAllBackdrops == OverrideAllValue.HideAll)
-            return false;
 
+        // We need this check first, to see if the backdrop is vanilla or modded.
         bool? shouldDisplay = backdrop switch
         {
             BlackholeBG => FewerVisualDistractionsModule.Settings.Backdrops.BlackholeBG,
@@ -70,11 +69,25 @@ public static class BackdropBlacklist
         };
 
         if (shouldDisplay.HasValue)
-            return shouldDisplay.Value;
-
-        // If we're still here, the backdrop isn't one available in the stock game.
-        // We should have a value for this in the settings, but if we don't, display the backdrop as a default.
-        return FewerVisualDistractionsModule.Settings.AdditionalBackdrops.GetValueOrDefault(backdrop.GetType().FullName, (null, true)).Item2;
+        {
+            // This is a vanilla backdrop. Use the vanilla override if set
+            if (FewerVisualDistractionsModule.Settings.Backdrops.OverrideAllBackdrops == OverrideAllValue.ShowAll)
+                return true;
+            else if (FewerVisualDistractionsModule.Settings.Backdrops.OverrideAllBackdrops == OverrideAllValue.HideAll)
+                return false;
+            else
+                return shouldDisplay.Value;
+        }
+        else
+        {
+            // This is a modded backdrop. Use the mod backdrop override if set
+            if (FewerVisualDistractionsModule.Settings.BackdropsFromMods.OverrideAllModdedBackdrops == OverrideAllValue.ShowAll)
+                return true;
+            else if (FewerVisualDistractionsModule.Settings.BackdropsFromMods.OverrideAllModdedBackdrops == OverrideAllValue.HideAll)
+                return false;
+            else
+                return FewerVisualDistractionsModule.Settings.AdditionalBackdrops.GetValueOrDefault(backdrop.GetType().FullName, (null, true)).Item2;
+        }
     }
 
     public static void Unload()

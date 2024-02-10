@@ -147,7 +147,8 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         public bool Pico8CloudMovement { get; set; } = true;
     }
 
-    [SettingSubHeader("Individual backdrop toggles")]
+    [SettingSubText("Individual backdrop toggles")]
+    [SettingName("FewerVisualDistractions_Settings_Backdrops")]
     public BackdropsMenu Backdrops { get; set; } = new BackdropsMenu();
 
     [SettingSubMenu]
@@ -213,13 +214,17 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
     [SettingIgnore]
     public SortedDictionary<string, (string, bool)> AdditionalBackdrops { get; set; } = [];
 
-    [SettingSubHeader("Individual backdrop toggles for modded backdrops")]
+    [SettingSubText("Individual backdrop toggles for modded backdrops")]
+    [SettingName("FewerVisualDistractions_Settings_BackdropsFromMods")]
     [YamlIgnore]
-    public BackdropsFromModsMenu BackdropsFromMods { get; set; }
+    public BackdropsFromModsMenu BackdropsFromMods { get; set; } = new BackdropsFromModsMenu();
 
     [SettingSubMenu]
     public class BackdropsFromModsMenu
     {
+        [SettingSubText("This setting overrides all the individual settings below")]
+        public OverrideAllValue OverrideAllModdedBackdrops { get; set; } = OverrideAllValue.Disabled;
+
         // The Create...Entry method just below replaces this one item with every modded backdrop
         [YamlIgnore]
         public bool BackdropsFromModsDummy { get; set; } = true;
@@ -235,7 +240,6 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
                 return;
             }
 
-            var modRegex = new Regex(@"^Celeste\.Mod\.([^.]+)");
             var backdropRegex = new Regex(@"\.([^.]+)$");
 
             foreach (var (fullName, (assembly, value)) in FewerVisualDistractionsModule.Settings.AdditionalBackdrops)
@@ -245,13 +249,12 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
                 if (!Everest.Modules.Any(m => m.GetType().Assembly.GetName().Name == assembly))
                     continue;
 
-                Match modMatch = modRegex.Match(fullName);
                 Match backdropMatch = backdropRegex.Match(fullName);
                 string displayName;
 
                 // "Mod name: backdrop name" if possible, otherwise use the full name including namespace
-                if (modMatch.Success && backdropMatch.Success)
-                    displayName = $"{modMatch.Groups[1].Value}: {backdropMatch.Groups[1].Value}";
+                if (backdropMatch.Success)
+                    displayName = $"{assembly}: {backdropMatch.Groups[1].Value}";
                 else
                     displayName = fullName;
 
