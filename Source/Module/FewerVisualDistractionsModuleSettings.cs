@@ -41,10 +41,11 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
     }
 
     [SettingSubText("Mod master switch. If this is off, all other settings below are ignored.")]
-    [SettingName("ModEnabled")]
+    [SettingName("FewerVisualDistractions_Settings_ModEnabled")]
     public bool ModEnabled { get; set; } = true;
 
-    public WindSettingsMenu WindSettings { get; set; } = new WindSettingsMenu();
+    [SettingName("FewerVisualDistractions_Settings_Wind")]
+    public WindSettingsMenu Wind { get; set; } = new WindSettingsMenu();
 
     [SettingSubMenu]
     public class WindSettingsMenu
@@ -80,7 +81,8 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         public bool WarpingDeathEffect { get; set; } = true;
     }
 
-    public ParallaxSettingsMenu ParallaxSettings { get; set; } = new ParallaxSettingsMenu();
+    [SettingName("FewerVisualDistractions_Settings_Parallax")]
+    public ParallaxSettingsMenu Parallax { get; set; } = new ParallaxSettingsMenu();
 
     [SettingSubMenu]
     public class ParallaxSettingsMenu
@@ -136,12 +138,12 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         public bool AnimateBlackHoleBackground { get; set; } = true;
 
         [SettingSubHeader("PICO-8 settings")]
-        [SettingName("ShowPicoSnow")]
+        [SettingName("FewerVisualDistractions_Settings_ShowPicoSnow")]
         [SettingSubText("Render snow particles in the PICO-8 emulator?")]
         public bool ShowPico8Snow { get; set; } = true;
 
         [SettingSubText("Enable background cloud movement in the PICO-8 emulator?")]
-        [SettingName("AnimatePicoClouds")]
+        [SettingName("FewerVisualDistractions_Settings_AnimatePicoClouds")]
         public bool Pico8CloudMovement { get; set; } = true;
     }
 

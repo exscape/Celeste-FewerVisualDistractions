@@ -42,7 +42,7 @@ public static class AdditionalEffectTweaker
     private static int ReplaceWindSnowAmount(int num)
     {
         if (FewerVisualDistractionsModule.Settings.ModEnabled)
-            return (int)(num * FewerVisualDistractionsModule.Settings.WindSettings.WindSnowAndStardustAmount / 100f);
+            return (int)(num * FewerVisualDistractionsModule.Settings.Wind.WindSnowAndStardustAmount / 100f);
         else
             return num;
     }

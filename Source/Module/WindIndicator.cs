@@ -55,7 +55,7 @@ public class WindIndicator : Entity
 
     public override void Render()
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.WindSettings.ShowWindIndicator || level?.Paused == true)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.Wind.ShowWindIndicator || level?.Paused == true)
             return;
 
         if (!haveEncounteredWind)
@@ -63,7 +63,7 @@ public class WindIndicator : Entity
 
         bool shouldDisplay = !level.InCutscene && haveEncounteredWind && (levelHasWindTriggers || (level.windController != null && level.windController.pattern != WindController.Patterns.None));
 
-        if (FewerVisualDistractionsModule.Settings.WindSettings.WindIndicatorType == WindIndicatorTypeValue.Graphical)
+        if (FewerVisualDistractionsModule.Settings.Wind.WindIndicatorType == WindIndicatorTypeValue.Graphical)
             RenderGraphicalIndicator(shouldDisplay); // Always called, as we need to animate when shouldDisplay has just changed to to false
         else if (shouldDisplay)
             RenderTextIndicator();
@@ -118,9 +118,9 @@ public class WindIndicator : Entity
             return;
 
         var distanceBetweenTextures = 5;
-        var baseY = FewerVisualDistractionsModule.Settings.WindSettings.WindIndicatorPosition == PositionValue.Top ? 10 : (1080 - 10 - directionTexture.Height - strengthTexture.Height - distanceBetweenTextures);
-        var yOffset = FewerVisualDistractionsModule.Settings.WindSettings.WindIndicatorOffset * 10;
-        var positionY = FewerVisualDistractionsModule.Settings.WindSettings.WindIndicatorPosition == PositionValue.Top ? baseY + yOffset : baseY - yOffset;
+        var baseY = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorPosition == PositionValue.Top ? 10 : (1080 - 10 - directionTexture.Height - strengthTexture.Height - distanceBetweenTextures);
+        var yOffset = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorOffset * 10;
+        var positionY = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorPosition == PositionValue.Top ? baseY + yOffset : baseY - yOffset;
 
         directionTexture.Draw(
             position: new Vector2(positionX + directionTexture.Width / 2f, positionY + directionTexture.Height / 2f),
@@ -153,9 +153,9 @@ public class WindIndicator : Entity
             _ => "Wind: None"
         };
 
-        var baseY = FewerVisualDistractionsModule.Settings.WindSettings.WindIndicatorPosition == PositionValue.Top ?
+        var baseY = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorPosition == PositionValue.Top ?
             0 : (1080 - ActiveFont.HeightOf("Wind: Right, strong"));
-        var yOffset = FewerVisualDistractionsModule.Settings.WindSettings.WindIndicatorOffset * 10;
+        var yOffset = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorOffset * 10;
         var positionY = baseY == 0 ? baseY + yOffset : baseY - yOffset;
 
         ActiveFont.DrawOutline(windString, new Vector2(16, positionY), Vector2.Zero, Vector2.One, Color.White, 2f, Color.Black);

@@ -37,7 +37,7 @@ public static class ParallaxTweaker
             self.Position -= totalMovement;
 
             // Add back the clamped amounts
-            var maxMovement = FewerVisualDistractionsModule.Settings.ParallaxSettings.MaxParallaxSpeed * Engine.DeltaTime;
+            var maxMovement = FewerVisualDistractionsModule.Settings.Parallax.MaxParallaxSpeed * Engine.DeltaTime;
             self.Position.X += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.X), maxMovement), totalMovement.X);
             self.Position.Y += (float)Math.CopySign(Math.Min(Math.Abs(totalMovement.Y), maxMovement), totalMovement.Y);
         }
@@ -47,9 +47,9 @@ public static class ParallaxTweaker
 
     public static Vector2 ReplaceParallaxScrollVector(Vector2 scroll, bool loopX, bool loopY)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.ParallaxSettings.ParallaxDuringMovement == ParallaxSettingValue.Standard)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Parallax.ParallaxDuringMovement == ParallaxSettingValue.Standard)
             return scroll;
-        else if (FewerVisualDistractionsModule.Settings.ParallaxSettings.ParallaxDuringMovement == ParallaxSettingValue.Locked)
+        else if (FewerVisualDistractionsModule.Settings.Parallax.ParallaxDuringMovement == ParallaxSettingValue.Locked)
             return Vector2.Zero;
 
         // This used to be the "Follow Camera" case, but that code didn't work very well, and indeed had outright bugs:
@@ -70,13 +70,13 @@ public static class ParallaxTweaker
         self.Scroll = ReplaceParallaxScrollVector(self.Scroll, self.LoopX, self.LoopY); // The method checks if we should actually replace or not
         orig(self, scene);
 
-        if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxSettings.ParallaxDuringMovement != ParallaxSettingValue.Standard)
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.Parallax.ParallaxDuringMovement != ParallaxSettingValue.Standard)
             self.Scroll = oldScroll;
     }
 
     private static void DreamBlock_Render(On.Celeste.DreamBlock.orig_Render orig, DreamBlock self)
     {
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.ParallaxSettings.DreamBlockStarsFollowCamera)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.Parallax.DreamBlockStarsFollowCamera)
         {
             orig(self);
             return;
@@ -108,7 +108,7 @@ public static class ParallaxTweaker
     {
         PutInside_orig = orig;
 
-        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.ParallaxSettings.DreamBlockStarsFollowCamera)
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || !FewerVisualDistractionsModule.Settings.Parallax.DreamBlockStarsFollowCamera)
             return orig(self, pos);
         else
             return pos;
@@ -120,7 +120,7 @@ public static class ParallaxTweaker
         self.Scroll = ReplaceParallaxScrollVector(self.Scroll, self.LoopX, self.LoopY); // The method checks if we should actually replace or not
         orig(self, scene);
 
-        if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.ParallaxSettings.ParallaxDuringMovement != ParallaxSettingValue.Standard)
+        if (FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.Parallax.ParallaxDuringMovement != ParallaxSettingValue.Standard)
             self.Scroll = oldScroll;
     }
 
