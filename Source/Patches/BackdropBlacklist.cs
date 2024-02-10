@@ -18,7 +18,7 @@ public static class BackdropBlacklist
 
         var type = self.GetType();
 
-        if (type.Namespace == "Celeste")
+        if (type.Assembly.GetName().Name == "Celeste" && type.Namespace == "Celeste")
             return;
 
         // This is a modded backdrop. Add it to our list of known mod backdrops, so that we can show a toggle for it in the menu
