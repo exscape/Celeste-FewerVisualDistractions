@@ -104,10 +104,10 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
     [SettingSubMenu]
     public class VariousEffectsMenu
     {
-        [SettingSubText("Show waterfalls in chapter 6?")]
+        [SettingSubText("Show waterfalls (in Reflection)?")]
         public bool ShowWaterfalls { get; set; } = true;
 
-        [SettingSubText("Show tentacles (purple-ish veil covering half the screen) in chapter 6?")]
+        [SettingSubText("Show tentacles (purple-ish veil covering half the screen) in Reflection?")]
         public bool ShowTentacles { get; set; } = true;
 
         [SettingSubText("Show heat distortion in Core?")]
@@ -159,38 +159,46 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         public OverrideAllValue OverrideAllBackdrops { get; set; } = OverrideAllValue.Disabled;
 
         // One setting for each backdrop available in the vanilla game
-        [SettingSubText("Used in Farewell")]
+        [SettingSubText("Background used in Farewell")]
         public bool BlackholeBG { get; set; } = true;
 
+        [SettingSubText("Small white stars used in a single room of Core")]
         public bool CoreStarsFG { get; set; } = true;
 
+        [SettingSubText("Not used (see Stars BG instead)")]
         public bool DreamStars { get; set; } = true;
 
-        [SettingSubText("Fast-moving background in chapter 6")]
+        [SettingSubText("Fast-moving background in Reflection")]
         public bool FinalBossStarfield { get; set; } = true;
 
+        [SettingSubText("Slanted, translucent, pink rectangles in Reflection")]
         public bool Godrays { get; set; } = true;
 
-        [SettingSubText("Used in Core. Also see Heat Distortion setting above")]
+        [SettingSubText("Tiny floating particles (blue/red) in Core. Also see Heat Distortion setting above")]
         public bool HeatWave { get; set; } = true;
 
+        [SettingSubText("Tiny floating particles in Mirror Temple")]
         public bool MirrorFG { get; set; } = true;
 
+        [SettingSubText("Aurora in the intro of Reflection")]
         public bool NorthernLights { get; set; } = true;
 
-        [SettingSubText("Background images, see README for more info")]
+        [SettingSubText("Used for almost all background images, see README for more info")]
         public bool Parallax { get; set; } = true;
 
+        [SettingSubText("Falling flower petals in Reflection")]
         public bool Petals { get; set; } = true;
 
-        [SettingSubText("Used in Farewell")]
+        [SettingSubText("Star-shaped \"planets\" in Farewell")]
         public bool Planets { get; set; } = true;
 
+        [SettingSubText("Rain used in several chapters")]
         public bool RainFG { get; set; } = true;
 
+        [SettingSubText("Tiny floating particles in Reflection")]
         public bool ReflectionFG { get; set; } = true;
 
-        [SettingSubText("Snow mostly used in chapter 1")]
+        [SettingSubText("Snow used in several chapters")]
         public bool Snow { get; set; } = true;
 
         [SettingSubText("Particles showing wind in Farewell; amount can be adjusted in Wind Settings")]
@@ -199,9 +207,10 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         [SettingSubText("Stars moving around in Farewell")]
         public bool Starfield { get; set; } = true;
 
-        [SettingSubText("Falling stars in chapter 2")]
+        [SettingSubText("Falling stars in Old Site")]
         public bool StarsBG { get; set; } = true;
 
+        [SettingSubText("Not used (but see Various Effects above)")]
         public bool Tentacles { get; set; } = true;
 
         [SettingSubText("Snow showing wind; amount can be adjusted in Wind Settings")]
