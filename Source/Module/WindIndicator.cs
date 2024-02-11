@@ -118,9 +118,12 @@ public class WindIndicator : Entity
             return;
 
         var distanceBetweenTextures = 5;
-        var baseY = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorPosition == PositionValue.Top ? 10 : (1080 - 10 - directionTexture.Height - strengthTexture.Height - distanceBetweenTextures);
-        var yOffset = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorOffset * 10;
-        var positionY = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorPosition == PositionValue.Top ? baseY + yOffset : baseY - yOffset;
+        var positionY = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorPosition switch
+        {
+            PositionValue.Top => 10,
+            PositionValue.Center => (1080 - directionTexture.Height - strengthTexture.Height - distanceBetweenTextures) / 2,
+            _ => 1080 - 10 - directionTexture.Height - strengthTexture.Height - distanceBetweenTextures,
+        };
 
         directionTexture.Draw(
             position: new Vector2(positionX + directionTexture.Width / 2f, positionY + directionTexture.Height / 2f),
@@ -153,11 +156,15 @@ public class WindIndicator : Entity
             _ => "Wind: None"
         };
 
-        var baseY = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorPosition == PositionValue.Top ?
-            0 : (1080 - ActiveFont.HeightOf("Wind: Right, strong"));
-        var yOffset = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorOffset * 10;
-        var positionY = baseY == 0 ? baseY + yOffset : baseY - yOffset;
+        var fontHeight = ActiveFont.HeightOf("Wind: Right, strong");
 
-        ActiveFont.DrawOutline(windString, new Vector2(16, positionY), Vector2.Zero, Vector2.One, Color.White, 2f, Color.Black);
+        var positionY = FewerVisualDistractionsModule.Settings.Wind.WindIndicatorPosition switch
+        {
+            PositionValue.Top => 0,
+            PositionValue.Center => (1080 - fontHeight) / 2,
+            _ => 1080 - fontHeight,
+        };
+
+        ActiveFont.DrawOutline(windString, new Vector2(positionY > 400 && positionY < 600 ? 8 : 16, positionY), Vector2.Zero, Vector2.One, Color.White, 2f, Color.Black);
     }
 }

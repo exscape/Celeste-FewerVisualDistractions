@@ -31,6 +31,7 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
     public enum PositionValue
     {
         Top,
+        Center,
         Bottom
     }
 
@@ -60,10 +61,6 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         public WindIndicatorTypeValue WindIndicatorType { get; set; } = WindIndicatorTypeValue.Graphical;
 
         public PositionValue WindIndicatorPosition { get; set; } = PositionValue.Top;
-
-        [SettingSubText("Distance between indicator and the selected screen edge")]
-        [SettingRange(-2, 55, LargeRange = true)]
-        public int WindIndicatorOffset { get; set; } = 0;
     }
 
     public DeathEffectsMenu DeathEffects { get; set; } = new DeathEffectsMenu();
@@ -148,7 +145,6 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         public bool Pico8CloudMovement { get; set; } = true;
     }
 
-    [SettingSubText("Individual backdrop toggles")]
     [SettingName("FewerVisualDistractions_Settings_Backdrops")]
     public BackdropsMenu Backdrops { get; set; } = new BackdropsMenu();
 
@@ -224,7 +220,6 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
     [SettingIgnore]
     public SortedDictionary<string, (string, bool)> AdditionalBackdrops { get; set; } = [];
 
-    [SettingSubText("Individual backdrop toggles for modded backdrops")]
     [SettingName("FewerVisualDistractions_Settings_BackdropsFromMods")]
     [YamlIgnore]
     public BackdropsFromModsMenu BackdropsFromMods { get; set; } = new BackdropsFromModsMenu();
