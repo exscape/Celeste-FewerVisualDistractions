@@ -50,7 +50,13 @@ public static class ParallaxTweaker
         if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.Parallax.ParallaxDuringMovement == ParallaxSettingValue.Standard)
             return scroll;
         else if (FewerVisualDistractionsModule.Settings.Parallax.ParallaxDuringMovement == ParallaxSettingValue.Locked)
-            return Vector2.Zero;
+        {
+            // Returning Vector2.Zero would be ideal, but that causes graphical issues here and there, most notably the last subchapter of The Summit.
+            // If we allow just a tiny bit of movement, that is barely perceptible when playing, it all works out.
+            return new Vector2(
+                Math.Abs(scroll.X) > 0.015 ? 0f : scroll.X,
+                Math.Abs(scroll.Y) > 0.015 ? 0f : scroll.Y);
+        }
 
         // This used to be the "Follow Camera" case, but that code didn't work very well, and indeed had outright bugs:
         // A scroll value of -0.02 (used in the Strawberry Jam lobby, for one) was replaced with -1, so the sky moved at breakneck speeds
