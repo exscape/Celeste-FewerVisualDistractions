@@ -156,10 +156,10 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
 
         // One setting for each backdrop available in the vanilla game
         [SettingSubText("Background used in Farewell")]
-        public bool BlackholeBG { get; set; } = true;
+        public bool Blackhole { get; set; } = true;
 
         [SettingSubText("Small white stars used in a single room of Core")]
-        public bool CoreStarsFG { get; set; } = true;
+        public bool CoreStars { get; set; } = true;
 
         [SettingSubText("Not used (see Stars BG instead)")]
         public bool DreamStars { get; set; } = true;
@@ -174,7 +174,7 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         public bool HeatWave { get; set; } = true;
 
         [SettingSubText("Tiny floating particles in Mirror Temple")]
-        public bool MirrorFG { get; set; } = true;
+        public bool MirrorParticles { get; set; } = true;
 
         [SettingSubText("Aurora in the intro of Reflection")]
         public bool NorthernLights { get; set; } = true;
@@ -189,22 +189,22 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         public bool Planets { get; set; } = true;
 
         [SettingSubText("Rain used in several chapters")]
-        public bool RainFG { get; set; } = true;
+        public bool Rain { get; set; } = true;
 
         [SettingSubText("Tiny floating particles in Reflection")]
-        public bool ReflectionFG { get; set; } = true;
+        public bool ReflectionParticles { get; set; } = true;
 
         [SettingSubText("Snow used in several chapters")]
         public bool Snow { get; set; } = true;
 
         [SettingSubText("Particles showing wind in Farewell; amount can be adjusted in Wind Settings")]
-        public bool StardustFG { get; set; } = true;
+        public bool Stardust { get; set; } = true;
 
         [SettingSubText("Stars moving around in Farewell")]
         public bool Starfield { get; set; } = true;
 
         [SettingSubText("Falling stars in Old Site")]
-        public bool StarsBG { get; set; } = true;
+        public bool Stars { get; set; } = true;
 
         [SettingSubText("Not used (but see Various Effects above)")]
         public bool Tentacles { get; set; } = true;
