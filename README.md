@@ -51,6 +51,12 @@ A useful Celeste feature is that the HUD/menu is hidden when you hold down the J
 
 # Changelog
 
+## v0.9.4 (2024-03-06)
+
+* Add compatibility with [Speedrun Tool](https://gamebanana.com/tools/6597) save state handling.
+
+There was a compatibility bug where using this mod together with Speedrun Tool would make using save states freeze the game entirely, which should be fixed when using v0.9.4 or later.
+
 ## v0.9.3 (2024-02-13)
 
 By **far** the biggest update yet! Tons of changes under the hood, but several very visible ones, too.
