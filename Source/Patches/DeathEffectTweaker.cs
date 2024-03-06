@@ -27,10 +27,14 @@ public static class DeathEffectTweaker
 
     private static void Level_Render(On.Celeste.Level.orig_Render orig, Level self)
     {
-        var oldScreenWipe = self.Wipe;
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.DeathEffects.ScreenWipes)
+        {
+            orig(self);
+            return;
+        }
 
-        if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.DeathEffects.ScreenWipes)
-            self.Wipe = null;
+        var oldScreenWipe = self.Wipe;
+        self.Wipe = null;
 
         orig(self);
 
