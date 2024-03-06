@@ -1,6 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
@@ -11,6 +13,11 @@ using static FewerVisualDistractionsModuleSettings;
 public static class DeathEffectTweaker
 {
     private static ILHook deathRoutineHook;
+
+    // Stored when screen wipes are disabled, yet a screen wipe has an onComplete action.
+    // Executed after the current update/render cycle is completed.
+    private static Action deferredScreenWipeAction = null;
+
     public static void Load()
     {
         // Tweak or remove the death effect (ring around the player)
@@ -22,23 +29,29 @@ public static class DeathEffectTweaker
             patch_PlayerDeadBody_DeathRoutine);
 
         // Remove screen wipes
-        On.Celeste.Level.Render += Level_Render;
+        On.Celeste.AreaData.DoScreenWipe += AreaData_DoScreenWipe;
+        On.Monocle.Engine.Update += Engine_Update;
     }
 
-    private static void Level_Render(On.Celeste.Level.orig_Render orig, Level self)
+    private static void AreaData_DoScreenWipe(On.Celeste.AreaData.orig_DoScreenWipe orig, AreaData self, Scene scene, bool wipeIn, Action onComplete)
     {
         if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.DeathEffects.ScreenWipes)
         {
-            orig(self);
+            orig(self, scene, wipeIn, onComplete);
             return;
         }
 
-        var oldScreenWipe = self.Wipe;
-        self.Wipe = null;
+        // Ignore the wipe, but run the onComplete action if it exists; see Engine_Update below.
+        // Adds compatibility with Speedrun Tool save states (and perhaps other mods) that use level.DoScreenWipe to execute actions
+        deferredScreenWipeAction = onComplete;
+    }
 
-        orig(self);
-
-        self.Wipe = oldScreenWipe;
+    private static void Engine_Update(On.Monocle.Engine.orig_Update orig, Engine self, GameTime gameTime)
+    {
+        // Handle screen wipe onComplete actions that weren't executed because screen wipes are disabled
+        deferredScreenWipeAction?.Invoke();
+        deferredScreenWipeAction = null;
+        orig(self, gameTime);
     }
 
     public static bool ShouldShowDeathWarpEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.DeathEffects.WarpingDeathEffect;
@@ -113,6 +126,8 @@ public static class DeathEffectTweaker
 
     public static void Unload()
     {
+        On.Celeste.AreaData.DoScreenWipe -= AreaData_DoScreenWipe;
+        On.Monocle.Engine.Update -= Engine_Update;
         IL.Celeste.DeathEffect.Draw -= patch_DeathEffect_Draw;
         On.Celeste.DeathEffect.Draw -= DeathEffect_Draw;
         deathRoutineHook?.Undo();
