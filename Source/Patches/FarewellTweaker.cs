@@ -48,7 +48,6 @@ public static class FarewellTweaker
         // Freeze/animate the edges of the lightning area
         if (FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.VariousEffects.AnimateLightningAreas)
             self.edgeSeed = 1;
-
     }
 
     private static void Entity_Render(On.Monocle.Entity.orig_Render orig, Monocle.Entity self)

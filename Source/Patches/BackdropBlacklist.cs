@@ -27,6 +27,12 @@ public static class BackdropBlacklist
 
     private static void BackdropRenderer_Render(On.Celeste.BackdropRenderer.orig_Render orig, BackdropRenderer self, Monocle.Scene scene)
     {
+        if (!FewerVisualDistractionsModule.Settings.ModEnabled)
+        {
+            orig(self, scene);
+            return;
+        }
+
         var oldVisible = self.Backdrops.Select(b => b.Visible).ToList();
         self.Backdrops.ForEach(b => b.Visible = b.Visible && IsBackdropEnabled(b));
 

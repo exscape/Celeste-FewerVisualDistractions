@@ -159,7 +159,8 @@ public static class AdditionalEffectTweaker
 
         orig(self);
 
-        self.water = oldWater;
+        if (!ShouldDrawWaterfalls())
+            self.water = oldWater;
     }
 
     public static void Unload()
