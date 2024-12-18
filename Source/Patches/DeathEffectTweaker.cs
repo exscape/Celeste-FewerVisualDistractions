@@ -86,7 +86,7 @@ public static class DeathEffectTweaker
             orig(position, color, ease);
     }
 
-    public static bool ShouldUseSingleColorDeathEffect() => !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.DeathEffects.RotatingDeathEffect == DeathEffectSettingValue.NoFlashes;
+    public static bool ShouldUseSingleColorDeathEffect() => FewerVisualDistractionsModule.Settings.ModEnabled && FewerVisualDistractionsModule.Settings.DeathEffects.RotatingDeathEffect == DeathEffectSettingValue.NoFlashes;
     private static void patch_DeathEffect_Draw(ILContext il)
     {
         ILCursor cursor = new(il);
