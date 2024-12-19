@@ -143,6 +143,10 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
         [SettingSubText("Enable background cloud movement in the PICO-8 emulator?")]
         [SettingName("FewerVisualDistractions_Settings_AnimatePicoClouds")]
         public bool Pico8CloudMovement { get; set; } = true;
+
+        [SettingSubText("Enable blinking hair for double dash in the PICO-8 emulator?")]
+        [SettingName("FewerVisualDistractions_Settings_BlinkingHair")]
+        public bool Pico8BlinkingHair { get; set; } = true;
     }
 
     [SettingName("FewerVisualDistractions_Settings_Backdrops")]

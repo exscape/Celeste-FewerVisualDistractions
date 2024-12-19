@@ -18,3 +18,4 @@ FewerVisualDistractions_Settings_MaxParallaxSpeed=Max Background Movement Speed
 
 FewerVisualDistractions_Settings_AnimatePicoClouds=PICO-8 Cloud Movement
 FewerVisualDistractions_Settings_ShowPicoSnow=PICO-8 Snow
+FewerVisualDistractions_Settings_BlinkingHair=PICO-8 Blinking Hair

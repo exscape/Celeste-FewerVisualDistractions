@@ -1,7 +1,10 @@
-﻿using Mono.Cecil.Cil;
+﻿using Celeste.Pico8;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Celeste.Mod.FewerVisualDistractions.Patches;
 
@@ -9,6 +12,8 @@ public static class AdditionalEffectTweaker
 {
     private static List<float> origCloudSpeeds;
     private static List<Pico8.Classic.Particle> origParticles;
+
+    private static ILHook blinkingHairHook;
 
     public static void Load()
     {
@@ -33,6 +38,10 @@ public static class AdditionalEffectTweaker
         // Remove cloud movement and snow in the PICO-8 version of Celeste
         On.Celeste.Pico8.Classic.Init += Classic_Init;
         On.Celeste.Pico8.Classic.Update += Classic_Update;
+
+        // Remove hair blanking (when double dash is available) in the PICO-8 version of Celeste
+        blinkingHairHook = new(typeof(Classic.player_hair).GetMethod("draw_hair", BindingFlags.Public | BindingFlags.Instance), patch_draw_hair);
+        IL.Celeste.Pico8.Classic.draw_player += patch_draw_player;
 
         // Modify amount of wind snow (0-100%) rendered; same for Stardust which is basically the same thing but colorful
         IL.Celeste.WindSnowFG.Render += patch_WindSnowFG_Render;
@@ -112,6 +121,66 @@ public static class AdditionalEffectTweaker
         orig(self);
     }
 
+    public static bool ShouldUseSingleColorHair() => FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.VariousEffects.Pico8BlinkingHair;
+
+    private static int GetHairColor(int djump)
+    {
+        if (djump == 0) return 12; // Blue
+        else if (djump == 1) return 8; // Red
+        else return 11; // Green
+    }
+
+    private static void patch_draw_hair(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        ILCursor beforeOriginalCode = cursor.Clone();
+        ILCursor afterOriginalCode = cursor.Clone();
+        if (!afterOriginalCode.TryGotoNext(MoveType.After,
+            instr => instr.MatchLdcI4(8),
+            instr => instr.MatchStloc(0)))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find CIL sequence to hook for draw_hair (PICO-8)!");
+            return;
+        }
+
+        cursor.EmitDelegate(ShouldUseSingleColorHair);
+        cursor.Emit(OpCodes.Brfalse, beforeOriginalCode.Next);
+
+        // Load the proper hair color, depending on the djump argument
+        cursor.Emit(OpCodes.Ldarg_3);
+        cursor.EmitDelegate(GetHairColor);
+        cursor.Emit(OpCodes.Stloc_0);
+        cursor.Emit(OpCodes.Br, afterOriginalCode.Next);
+    }
+
+    private static void patch_draw_player(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        if (!cursor.TryGotoNext(
+            instr => instr.MatchLdcI4(160) // Load player with white hair
+            ))
+        {
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find CIL sequence to hook for draw_player (PICO-8)!");
+            return;
+        }
+
+        // This patch works pretty much the same way as the one in DeathEffectTweaker.cs (patch_DeathEffect_Draw)
+        // If djump == 2 i.e. we can dash twice, possibly replace the color calculation (blinking) with our own (static)
+
+        ILCursor originalCode = cursor.Clone();
+        ILCursor afterOriginalCode = cursor.Clone();
+        afterOriginalCode.Index += 2;
+
+        // Check the setting, and skip to the original code if the setting is disabled
+        cursor.EmitDelegate(ShouldUseSingleColorHair);
+        cursor.Emit(OpCodes.Brfalse, originalCode.Next);
+
+        // Add in our replacement code
+        cursor.Emit(OpCodes.Ldc_I4, 144); // Player with green hair
+        cursor.Emit(OpCodes.Stloc_0);
+        cursor.Emit(OpCodes.Br, afterOriginalCode.Next);
+    }
+
     private static void HeatWave_RenderDisplacement(On.Celeste.HeatWave.orig_RenderDisplacement orig, HeatWave self, Level level)
     {
         if (!FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowHeatDistortion)
@@ -176,5 +245,9 @@ public static class AdditionalEffectTweaker
         On.Celeste.Pico8.Classic.Update -= Classic_Update;
         IL.Celeste.WindSnowFG.Render -= patch_WindSnowFG_Render;
         IL.Celeste.StardustFG.Render -= patch_StardustFG_Render;
+        blinkingHairHook?.Undo();
+        blinkingHairHook?.Dispose();
+        blinkingHairHook = null;
+        IL.Celeste.Pico8.Classic.draw_player -= patch_draw_player;
     }
 }

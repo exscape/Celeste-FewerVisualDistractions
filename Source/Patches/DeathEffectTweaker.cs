@@ -66,7 +66,7 @@ public static class DeathEffectTweaker
             instr => instr.MatchLdnull()
            ))
         {
-            Logger.Log(LogLevel.Error, "DeathEffectTweaker", "Couldn't find CIL sequence to hook for PlayerDeadBody.DeathRoutine!");
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find CIL sequence to hook for PlayerDeadBody.DeathRoutine!");
             return;
         }
 
@@ -97,7 +97,7 @@ public static class DeathEffectTweaker
             instr => instr.MatchConvR8()
             ))
         {
-            Logger.Log(LogLevel.Error, "DeathEffectTweaker", "Couldn't find CIL sequence to hook for DeathEffect.Draw!");
+            Logger.Log(LogLevel.Error, "FewerVisualDistractions", "Couldn't find CIL sequence to hook for DeathEffect.Draw!");
             return;
         }
 

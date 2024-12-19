@@ -51,6 +51,12 @@ A useful Celeste feature is that the HUD/menu is hidden when you hold down the J
 
 # Changelog
 
+## v0.9.5 (2024-12-19)
+
+* Move PICO-8 settings to a submenu (the two previous settings are reset to their default values on upgrade)
+* Add setting to disable blinking hair (when double dash is available) in the PICO-8 version of Celeste
+* Fix issue where one setting (single-color death effect) was active with the mod master switch off
+
 ## v0.9.4 (2024-03-06)
 
 * Add compatibility with [Speedrun Tool](https://gamebanana.com/tools/6597) save state handling.
