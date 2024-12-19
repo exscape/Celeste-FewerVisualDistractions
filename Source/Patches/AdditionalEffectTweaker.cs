@@ -102,8 +102,8 @@ public static class AdditionalEffectTweaker
 
     private static void Classic_Update(On.Celeste.Pico8.Classic.orig_Update orig, Pico8.Classic self)
     {
-        bool shouldAnimateClouds = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.Pico8CloudMovement;
-        bool shouldRenderSnow = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.VariousEffects.ShowPico8Snow;
+        bool shouldAnimateClouds = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.PICO8Settings.CloudMovement;
+        bool shouldRenderSnow = !FewerVisualDistractionsModule.Settings.ModEnabled || FewerVisualDistractionsModule.Settings.PICO8Settings.ShowSnow;
 
         if (!shouldRenderSnow && self.particles.Count > 0)
             self.particles.Clear();
@@ -121,7 +121,7 @@ public static class AdditionalEffectTweaker
         orig(self);
     }
 
-    public static bool ShouldUseSingleColorHair() => FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.VariousEffects.Pico8BlinkingHair;
+    public static bool ShouldUseSingleColorHair() => FewerVisualDistractionsModule.Settings.ModEnabled && !FewerVisualDistractionsModule.Settings.PICO8Settings.BlinkingHair;
 
     private static int GetHairColor(int djump)
     {

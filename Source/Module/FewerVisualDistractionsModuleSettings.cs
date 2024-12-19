@@ -134,19 +134,25 @@ public class FewerVisualDistractionsModuleSettings : EverestModuleSettings
 
         [SettingSubText("Animate the black hole background in Farewell?")]
         public bool AnimateBlackHoleBackground { get; set; } = true;
+    }
 
-        [SettingSubHeader("PICO-8 settings")]
+    [SettingName("FewerVisualDistractions_Settings_PICOSettingsMenu")]
+    public PICO8SettingsMenu PICO8Settings { get; set; } = new PICO8SettingsMenu();
+
+    [SettingSubMenu]
+    public class PICO8SettingsMenu
+    {
+        [SettingSubText("Render snow particles?")]
         [SettingName("FewerVisualDistractions_Settings_ShowPicoSnow")]
-        [SettingSubText("Render snow particles in the PICO-8 emulator?")]
-        public bool ShowPico8Snow { get; set; } = true;
+        public bool ShowSnow { get; set; } = true;
 
-        [SettingSubText("Enable background cloud movement in the PICO-8 emulator?")]
+        [SettingSubText("Enable background cloud movement?")]
         [SettingName("FewerVisualDistractions_Settings_AnimatePicoClouds")]
-        public bool Pico8CloudMovement { get; set; } = true;
+        public bool CloudMovement { get; set; } = true;
 
-        [SettingSubText("Enable blinking hair for double dash in the PICO-8 emulator?")]
+        [SettingSubText("Enable blinking hair when double dash is available?")]
         [SettingName("FewerVisualDistractions_Settings_BlinkingHair")]
-        public bool Pico8BlinkingHair { get; set; } = true;
+        public bool BlinkingHair { get; set; } = true;
     }
 
     [SettingName("FewerVisualDistractions_Settings_Backdrops")]

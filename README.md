@@ -36,6 +36,7 @@ Available settings include:
   - Hide tentacles -- the purple-ish veil that hides half the screen in parts of chapter 6
   - Hide heat distortion in Core (also see the "Heat Wave" backdrop which can be toggled separately)
   - Hide snow and cloud movement in the PICO-8 version of Celeste
+  - Disable blinking hair in the PICO-8 version of Celeste
 * Farewell-specific settings (also applies to some modded maps):
   - Hide floating creatures
   - Hide floating debris
